@@ -33,6 +33,7 @@ CS411 project -- We help people who want to work on a side project find a team t
   1. what platform have you used (e.g., cPanel, AWS...)?
   
   We will be using AWS to host our API and our database using RDS and EC2.
+  
   2. fill in Project Setup Report URL on your project page.
 - Database Setup: please answer the following questions:
   1. What relational database system have you used?
