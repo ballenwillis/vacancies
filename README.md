@@ -19,8 +19,7 @@ Teamfinder project -- We help people who want to work on a side project find a t
 - Server should start 🌎
   > you should see `Listening on port $PORT` in the console where $PORT is the port you set in `.env`
 
-### Client
-
+## Client
 - Go to the client directory `cd client`
 - Install all dependencies using [`yarn`](https://yarnpkg.com)
 - **start development server** 🚀 - `yarn start`
