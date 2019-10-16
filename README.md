@@ -6,7 +6,7 @@ Teamfinder project -- We help people who want to work on a side project find a t
 ## Database
 - Go to the Database directory `cd Database`
 - Create a database called `vacancies`
-- Run `initial-setup.sql` the `public` schema.
+- Run `initial-setup.sql` on the `public` schema.
 
 ## API
 - Go to the API directory `cd API`
