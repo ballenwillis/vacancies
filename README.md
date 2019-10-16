@@ -20,6 +20,26 @@ CS411 project -- We help people who want to work on a side project find a team t
   > you should see `Listening on port $PORT` in the console where $PORT is the port you set in `.env`
 
 ## Client
-- Go to the client directory `cd client`
+- Go to the client directory `cd Vacancies`
 - Install all dependencies using [`yarn`](https://yarnpkg.com)
 - **start development server** 🚀 - `yarn start`
+
+
+# CS 411 Stage 3 Requirements:
+- Server Setup: a detailed description of how you set up your project local or remote server. OPTIONAL: provide screenshots to show that your server is up and running.
+
+[See Above]
+- If you are hosting your project remotely, please answer the following questions:
+  1. what platform have you used (e.g., cPanel, AWS...)?
+  
+  We will be using AWS to host our API and our database using RDS and EC2.
+  
+  2. fill in Project Setup Report URL on your project page.
+- Database Setup: please answer the following questions:
+  1. What relational database system have you used?
+    
+    We are using PostgresQL.
+    
+  2. How you plan to import real data?
+    
+    We will collect real data through Google forms. We have pretty wide reach in both the tech world and the student ecosystem. This will not be hard to collect. The harder part will be either creating fake profiles or convincing people to signup for the app in order for us to post their project.
