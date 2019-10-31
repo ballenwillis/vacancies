@@ -38,7 +38,11 @@ const styles = StyleSheet.create({
   Root_nug: {
     flex: 1,
     alignItems: "center",
-    alignContent: "center"
+    alignContent: "center",
+    padding: 4
+  },
+  Button_n3l: {
+    marginTop: 32
   }
 })
 
