@@ -2,6 +2,40 @@ import React from "react"
 import { StatusBar, StyleSheet, View } from "react-native"
 import { draftbit as screenTheme } from "../config/Themes"
 import { withTheme, ScreenContainer, Container, CardBlock, Button } from "@draftbit/ui"
+import * as PropTypes from "prop-types"
+
+const ProjectCard = () =>
+  withTheme(
+    <Container
+      style={styles.Container_nec}
+      elevation={0}
+      borderColor={props.theme.colors.divider}
+      useThemeGutterPadding={true}>
+      <CardBlock
+        style={styles.CardBlock_nve}
+        icon="MaterialIcons/cloud"
+        image="https://apps-draftbit-com.s3.amazonaws.com/apps/zYTsJNxi/assets/9e8d5125-43b4-4e87-ab69-a16a93d67a50"
+        title="[Title]"
+        elevation={1}
+        numColumns={3}
+        aspectRatio={1.5}
+        leftDescription="[user name]"
+      />
+      <Container style={styles.Container_n86} elevation={0} useThemeGutterPadding={true}>
+        <Button style={styles.Button_nl2} icon="FontAwesome/pencil" type="outline">
+          Edit Project
+        </Button>
+        <Button style={styles.Button_nl2} icon="FontAwesome/trash-o" type="outline">
+          Get Started
+        </Button>
+        <Button style={styles.Button_nl2} icon="FontAwesome/plus" type="outline">
+          Request To Join
+        </Button>
+      </Container>
+    </Container>
+  )
+
+ProjectCard.propTypes = { theme: PropTypes.any }
 
 class MainScreen extends React.Component {
   constructor(props) {
@@ -17,36 +51,8 @@ class MainScreen extends React.Component {
     const { theme } = this.state
 
     return (
-      <View>
-        <ScreenContainer hasSafeArea={true} scrollable={true} style={styles.Root_nug}>
-          <Container
-            style={styles.Container_nec}
-            elevation={0}
-            borderColor={theme.colors.divider}
-            useThemeGutterPadding={true}>
-            <CardBlock
-              style={styles.CardBlock_nve}
-              icon="MaterialIcons/cloud"
-              image="https://apps-draftbit-com.s3.amazonaws.com/apps/zYTsJNxi/assets/9e8d5125-43b4-4e87-ab69-a16a93d67a50"
-              title="[Title]"
-              elevation={1}
-              numColumns={3}
-              aspectRatio={1.5}
-              leftDescription="[user name]"
-            />
-            <Container style={styles.Container_n86} elevation={0} useThemeGutterPadding={true}>
-              <Button style={styles.Button_nl2} icon="FontAwesome/pencil" type="outline">
-                Edit Project
-              </Button>
-              <Button style={styles.Button_nl2} icon="FontAwesome/trash-o" type="outline">
-                Get Started
-              </Button>
-              <Button style={styles.Button_nl2} icon="FontAwesome/plus" type="outline">
-                Request To Join
-              </Button>
-            </Container>
-          </Container>
-        </ScreenContainer>
+      <ScreenContainer hasSafeArea={true} scrollable={true} style={styles.Root_nug}>
+        <ProjectCard theme={theme} />
         <Button
           style={styles.Button_n3l}
           icon="FontAwesome/angle-left"
@@ -56,7 +62,7 @@ class MainScreen extends React.Component {
           }}>
           Logout
         </Button>
-      </View>
+      </ScreenContainer>
     )
   }
 }
