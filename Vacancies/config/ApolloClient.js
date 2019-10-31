@@ -22,7 +22,7 @@ const link = setContext(async (_, { headers }) => {
   }
 
   return newHeaders
-}).concat(new HttpLink({ uri: "https://localhost:3000/graphql", fetch }))
+}).concat(new HttpLink({ uri: "http://localhost:3000/graphql", fetch }))
 
 const client = new ApolloClient({
   cache,

@@ -1,5 +1,5 @@
 import React from "react"
-import { StatusBar, StyleSheet } from "react-native"
+import { AsyncStorage, StatusBar, StyleSheet } from "react-native"
 import { withTheme, ScreenContainer, Button } from "@draftbit/ui"
 import { draftbit as screenTheme } from "../config/Themes"
 import { ProjectCard } from "../components"
@@ -24,9 +24,8 @@ class MainScreen extends React.Component {
           style={styles.Button_n3l}
           icon="FontAwesome/angle-left"
           type="outline"
-          onPress={() => {
-            this.props.navigation.navigate("Navigator")
-          }}>
+          onPress={async () => {await AsyncStorage.removeItem("token")
+            this.props.navigation.navigate("AuthNavigator")}}>
           Logout
         </Button>
       </ScreenContainer>
