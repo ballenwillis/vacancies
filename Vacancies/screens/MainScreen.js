@@ -31,6 +31,23 @@ class MainScreen extends React.Component {
     }
   }
 
+  onCreate = async () => {
+    const { CreateProject, GetAllProjects, GetCurrentUser: {getCurrentUser: {userId}} } = this.props
+    const randomNumber = Math.floor(Math.random() * 100)
+    const response = await CreateProject({
+      variables: {
+        input: {
+          project: {
+            ownerId: userId,
+            title: "New Title has number " + randomNumber + "!"
+          }
+        }
+      }
+    })
+    alert(response)
+    GetAllProjects.refetch()
+  }
+
   renderItem = ({ item }) => {
     const { theme } = this.state
     const {
@@ -80,6 +97,12 @@ class MainScreen extends React.Component {
           renderItem={this.renderItem}
           keyExtractor={item => item.projectId.toString()}
         />
+        <Button
+          icon="FontAwesome/angle-left"
+          type="outline"
+          onPress={this.onCreate}>
+          Create New Project
+        </Button>
         <Button
           icon="FontAwesome/angle-left"
           type="outline"
@@ -135,9 +158,31 @@ const DELETE_PROJECT = gql`
   }
 `
 
+const UPDATE_PROJECT = gql`
+  mutation UpdateProject($input: UpdateProjectByProjectIdInput!) {
+    updateProjectByProjectId(input: $input) {
+      project {
+        projectId
+      }
+    }
+  }
+`
+
+const CREATE_PROJECT = gql` 
+  mutation CreateProject($input:CreateProjectInput!){
+    createProject(input:$input){
+      project{
+        projectId
+      }
+    }
+  }
+`
+
 export default compose(
   graphql(GET_ALL_PROJECTS, { name: "GetAllProjects" }),
   graphql(GET_CURRENT_USER, { name: "GetCurrentUser" }),
   graphql(DELETE_PROJECT, { name: "DeleteProject" }),
+  graphql(UPDATE_PROJECT, { name: "UpdateProject" }),
+  graphql(CREATE_PROJECT, {name: "CreateProject"}),
   withTheme
 )(MainScreen)
