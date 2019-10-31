@@ -17,6 +17,24 @@ class MainScreen extends React.Component {
     }
   }
 
+  onEdit = projectId => {
+    return async () => {
+      const { UpdateProject, GetAllProjects } = this.props
+      const randomNumber = Math.floor(Math.random() * 100)
+      await UpdateProject({
+        variables: {
+          input: {
+            projectId,
+            projectPatch: {
+              title: "New Title has number " + randomNumber + "!"
+            }
+          }
+        }
+      })
+      GetAllProjects.refetch()
+    }
+  }
+
   onDelete = projectId => {
     return async () => {
       const { DeleteProject, GetAllProjects } = this.props
@@ -34,7 +52,7 @@ class MainScreen extends React.Component {
   onCreate = async () => {
     const { CreateProject, GetAllProjects, GetCurrentUser: {getCurrentUser: {userId}} } = this.props
     const randomNumber = Math.floor(Math.random() * 100)
-    const response = await CreateProject({
+    await CreateProject({
       variables: {
         input: {
           project: {
@@ -70,6 +88,7 @@ class MainScreen extends React.Component {
         title={title}
         ownerName={ownerName}
         onDelete={this.onDelete(projectId)}
+        onEdit={this.onEdit(projectId)}
       />
     )
   }
