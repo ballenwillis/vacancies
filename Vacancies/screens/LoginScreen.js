@@ -31,8 +31,7 @@ class LoginScreen extends React.Component {
           style={styles.KeyboardAvoidingView_noy}
           enabled={true}
           behavior="padding"
-          keyboardVerticalOffset={0}
-        >
+          keyboardVerticalOffset={0}>
           <Container style={styles.Container_nt4} elevation={0} useThemeGutterPadding={true}>
             <Image style={styles.Image_nrg} source={Images.BuildPng6} resizeMode="contain" />
             <Text
@@ -42,23 +41,11 @@ class LoginScreen extends React.Component {
                 {
                   color: theme.colors.primary
                 }
-              ]}
-            >
+              ]}>
               Vacancies: Where Dreamers and Builders Create
             </Text>
           </Container>
           <Container style={styles.Container_nkd} elevation={0} useThemeGutterPadding={true}>
-            <Text
-              style={[
-                styles.Text_na5,
-                theme.typography.overline,
-                {
-                  color: theme.colors.medium
-                }
-              ]}
-            >
-              ENTER YOUR CREDENTIALS:
-            </Text>
             <TextField
               style={styles.TextField_nds}
               type="solid"
@@ -80,17 +67,15 @@ class LoginScreen extends React.Component {
               type="solid"
               color={theme.colors.primary}
               onPress={() => {
-                this.props.navigation.navigate("Navigator_1")
-              }}
-            >
+                this.props.navigation.navigate("Main_App")
+              }}>
               SIGN IN
             </Button>
             <Touchable
               style={styles.Touchable_no2}
               onPress={() => {
                 this.props.navigation.navigate("SignUpScreen")
-              }}
-            >
+              }}>
               <Text
                 style={[
                   styles.Text_ndm,
@@ -98,8 +83,7 @@ class LoginScreen extends React.Component {
                   {
                     color: theme.colors.primary
                   }
-                ]}
-              >
+                ]}>
                 Create Account
               </Text>
             </Touchable>
@@ -112,8 +96,7 @@ class LoginScreen extends React.Component {
                 {
                   color: theme.colors.light
                 }
-              ]}
-            >
+              ]}>
               By tapping "Sign In", you agree to our Terms of Service, Privacy Policy and Cookie
               Policy.
             </Text>
