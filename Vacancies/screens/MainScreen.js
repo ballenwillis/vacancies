@@ -44,7 +44,6 @@ class MainScreen extends React.Component {
         }
       }
     })
-    alert(response)
     GetAllProjects.refetch()
   }
 
@@ -98,6 +97,7 @@ class MainScreen extends React.Component {
           keyExtractor={item => item.projectId.toString()}
         />
         <Button
+          style={{marginBottom: 16}}
           icon="FontAwesome/angle-left"
           type="outline"
           onPress={this.onCreate}>
