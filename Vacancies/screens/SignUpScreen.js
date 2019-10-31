@@ -1,5 +1,7 @@
 import React from "react"
-import { StatusBar, StyleSheet, KeyboardAvoidingView, Text } from "react-native"
+import { StatusBar, StyleSheet, KeyboardAvoidingView, Text, AsyncStorage, TextInput } from "react-native"
+import { graphql } from "react-apollo"
+import gql from "graphql-tag";
 import { draftbit as screenTheme } from "../config/Themes"
 import {
   withTheme,
@@ -16,15 +18,41 @@ class SignUpScreen extends React.Component {
   constructor(props) {
     super(props)
     StatusBar.setBarStyle("dark-content")
+  }
 
-    this.state = {
-      theme: Object.assign(props.theme, screenTheme)
+  state = {
+    formFirstName: "",
+    formLastName: "",
+    formEmail: "",
+    formPassword: "",
+  }
+
+  signUp = async () => {
+    const { RegisterUser } = this.props;
+    const { formFirstName, formLastName, formEmail, formPassword } = this.state
+    AsyncStorage.removeItem("token");
+    try {
+      const response = await RegisterUser({
+        variables: {
+          input: {
+            firstName: formFirstName,
+            lastName: formLastName,
+            email: formEmail,
+            password: formPassword
+          }
+        }
+      });
+      alert(JSON.stringify(response))
+      await AsyncStorage.setItem("token", response.data.registerUser.jwtToken);
+      this.props.navigation.navigate("Main_App")
+    } catch (e) {
+      alert(e)
     }
   }
 
   render() {
-    const { theme } = this.state
-
+    const { formFirstName, formLastName, formEmail, formPassword, loggingIn} = this.state
+    const { theme } = this.props
     return (
       <ScreenContainer hasSafeArea={true} scrollable={true} style={styles.Root_ni5}>
         <KeyboardAvoidingView
@@ -46,39 +74,49 @@ class SignUpScreen extends React.Component {
             </Text>
           </Container>
           <Container style={styles.Container_nkd} elevation={0} useThemeGutterPadding={true}>
-            <Text
-              style={[
-                styles.Text_na5,
-                theme.typography.overline,
-                {
-                  color: theme.colors.medium
-                }
-              ]}>
-              ENTER YOUR CREDENTIALS:
-            </Text>
-            <TextField
+            <TextInput
+              style={styles.TextField_nds}
+              type="solid"
+              label="First Name"
+              placeholder="joe"
+              leftIconMode="inset"
+              onChangeText={(firstName) => this.setState({formFirstName: firstName})}
+              value={formFirstName}
+            />
+            <TextInput
+              style={styles.TextField_nds}
+              type="solid"
+              label="Last Name"
+              placeholder="Smith"
+              leftIconMode="inset"
+              onChangeText={(lastName) => this.setState({formLastName: lastName})}
+              value={formLastName}
+            />
+            <TextInput
               style={styles.TextField_nds}
               type="solid"
               label="Email Address"
               placeholder="joe@example.com"
               keyboardType="email-address"
               leftIconMode="inset"
+              onChangeText={(email) => this.setState({formEmail: email})}
+              value={formEmail}
             />
-            <TextField
+            <TextInput
               style={styles.TextField_n1l}
               type="solid"
               label="Password"
               placeholder="**********"
               leftIconMode="inset"
               secureTextEntry={true}
+              onChangeText={(password) => this.setState({formPassword: password})}
+              value={formPassword}
             />
             <Button
               style={styles.Button_na1}
               type="solid"
               color={theme.colors.primary}
-              onPress={() => {
-                this.props.navigation.navigate("Main_App")
-              }}>
+              onPress={async () => await this.signUp()}>
               SIGN UP
             </Button>
             <Touchable
@@ -140,8 +178,8 @@ const styles = StyleSheet.create({
     height: 82
   },
   TextField_nds: {
-    height: 82,
-    marginBottom: 8
+    height: 64,
+    marginBottom: 4
   },
   Text_n7b: {
     textAlign: "center",
@@ -164,4 +202,13 @@ const styles = StyleSheet.create({
   }
 })
 
-export default withTheme(SignUpScreen)
+
+const REGISTER_USER = gql`
+  mutation RegisterUser($input: RegisterUserInput!) {
+    registerUser(input: $input) {
+      jwtToken
+    }
+  }
+`
+
+export default graphql(REGISTER_USER, {name: "RegisterUser" })(withTheme(SignUpScreen))
