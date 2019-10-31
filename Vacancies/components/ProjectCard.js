@@ -9,7 +9,10 @@ const ProjectCard = ({
   isMember = false,
   ownerName = "Brandon Willis",
   title = "Build a dating app!",
-  style
+  style,
+  onDelete = () => {},
+  onEdit = () => {},
+  onRequestJoin = () => {}
 }) => (
   <Container
     style={[styles.container, style]}
@@ -29,16 +32,27 @@ const ProjectCard = ({
     <Container style={styles.Container_n86} elevation={0} useThemeGutterPadding={true}>
       {isOwner ? (
         <>
-          {" "}
-          <Button style={styles.Button_nl2} icon="FontAwesome/pencil" type="outline">
+          <Button
+            style={styles.Button_nl2}
+            icon="FontAwesome/pencil"
+            type="outline"
+            onPress={onEdit}>
             Edit Project
           </Button>
-          <Button style={styles.Button_nl2} icon="FontAwesome/trash-o" type="outline">
+          <Button
+            style={styles.Button_nl2}
+            icon="FontAwesome/trash-o"
+            type="outline"
+            onPress={onDelete}>
             Delete Project
           </Button>
         </>
       ) : isMember ? null : (
-        <Button style={styles.Button_nl2} icon="FontAwesome/plus" type="outline">
+        <Button
+          style={styles.Button_nl2}
+          icon="FontAwesome/plus"
+          type="outline"
+          onPress={onRequestJoin}>
           Request To Join
         </Button>
       )}
