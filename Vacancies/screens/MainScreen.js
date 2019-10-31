@@ -17,6 +17,23 @@ class MainScreen extends React.Component {
     }
   }
 
+  onEdit = projectId => {
+    return async () => {
+      const { UpdateProject, GetAllProjects } = this.props
+      await UpdateProject({
+        variables: {
+          input: {
+            projectId,
+            projectPatch: {
+              title: "New Title!"
+            }
+          }
+        }
+      })
+      GetAllProjects.refetch()
+    }
+  }
+
   onDelete = projectId => {
     return async () => {
       const { DeleteProject, GetAllProjects } = this.props
@@ -54,6 +71,7 @@ class MainScreen extends React.Component {
         title={title}
         ownerName={ownerName}
         onDelete={this.onDelete(projectId)}
+        onEdit={this.onEdit(projectId)}
       />
     )
   }
@@ -135,9 +153,20 @@ const DELETE_PROJECT = gql`
   }
 `
 
+const UPDATE_PROJECT = gql`
+mutation UpdateProject($input:UpdateProjectByProjectIdInput!){
+  updateProjectByProjectId(input:$input){
+    project{
+      projectId
+    }
+  }
+}
+`
+
 export default compose(
   graphql(GET_ALL_PROJECTS, { name: "GetAllProjects" }),
   graphql(GET_CURRENT_USER, { name: "GetCurrentUser" }),
   graphql(DELETE_PROJECT, { name: "DeleteProject" }),
+  graphql(UPDATE_PROJECT, { name: "UpdateProject" }),
   withTheme
 )(MainScreen)
