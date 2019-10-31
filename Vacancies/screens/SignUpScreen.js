@@ -1,7 +1,14 @@
 import React from "react"
-import { StatusBar, StyleSheet, KeyboardAvoidingView, Text, AsyncStorage, TextInput } from "react-native"
+import {
+  StatusBar,
+  StyleSheet,
+  KeyboardAvoidingView,
+  Text,
+  AsyncStorage,
+  TextInput
+} from "react-native"
 import { graphql } from "react-apollo"
-import gql from "graphql-tag";
+import gql from "graphql-tag"
 import { draftbit as screenTheme } from "../config/Themes"
 import {
   withTheme,
@@ -24,13 +31,13 @@ class SignUpScreen extends React.Component {
     formFirstName: "",
     formLastName: "",
     formEmail: "",
-    formPassword: "",
+    formPassword: ""
   }
 
   signUp = async () => {
-    const { RegisterUser } = this.props;
+    const { RegisterUser } = this.props
     const { formFirstName, formLastName, formEmail, formPassword } = this.state
-    AsyncStorage.removeItem("token");
+    AsyncStorage.removeItem("token")
     try {
       const response = await RegisterUser({
         variables: {
@@ -41,8 +48,8 @@ class SignUpScreen extends React.Component {
             password: formPassword
           }
         }
-      });
-      await AsyncStorage.setItem("token", response.data.registerUser.jwtToken);
+      })
+      await AsyncStorage.setItem("token", response.data.registerUser.jwtToken)
       this.props.navigation.navigate("Main_App")
     } catch (e) {
       alert("Oops... something went wrong... try again")
@@ -50,7 +57,7 @@ class SignUpScreen extends React.Component {
   }
 
   render() {
-    const { formFirstName, formLastName, formEmail, formPassword, loggingIn} = this.state
+    const { formFirstName, formLastName, formEmail, formPassword, loggingIn } = this.state
     const { theme } = this.props
     return (
       <ScreenContainer hasSafeArea={true} scrollable={true} style={styles.Root_ni5}>
@@ -79,7 +86,7 @@ class SignUpScreen extends React.Component {
               label="First Name"
               placeholder="joe"
               leftIconMode="inset"
-              onChangeText={(firstName) => this.setState({formFirstName: firstName})}
+              onChangeText={firstName => this.setState({ formFirstName: firstName })}
               value={formFirstName}
             />
             <TextInput
@@ -88,7 +95,7 @@ class SignUpScreen extends React.Component {
               label="Last Name"
               placeholder="Smith"
               leftIconMode="inset"
-              onChangeText={(lastName) => this.setState({formLastName: lastName})}
+              onChangeText={lastName => this.setState({ formLastName: lastName })}
               value={formLastName}
             />
             <TextInput
@@ -98,7 +105,7 @@ class SignUpScreen extends React.Component {
               placeholder="joe@example.com"
               keyboardType="email-address"
               leftIconMode="inset"
-              onChangeText={(email) => this.setState({formEmail: email})}
+              onChangeText={email => this.setState({ formEmail: email })}
               value={formEmail}
             />
             <TextInput
@@ -108,7 +115,7 @@ class SignUpScreen extends React.Component {
               placeholder="**********"
               leftIconMode="inset"
               secureTextEntry={true}
-              onChangeText={(password) => this.setState({formPassword: password})}
+              onChangeText={password => this.setState({ formPassword: password })}
               value={formPassword}
             />
             <Button
@@ -201,7 +208,6 @@ const styles = StyleSheet.create({
   }
 })
 
-
 const REGISTER_USER = gql`
   mutation RegisterUser($input: RegisterUserInput!) {
     registerUser(input: $input) {
@@ -210,4 +216,4 @@ const REGISTER_USER = gql`
   }
 `
 
-export default graphql(REGISTER_USER, {name: "RegisterUser" })(withTheme(SignUpScreen))
+export default graphql(REGISTER_USER, { name: "RegisterUser" })(withTheme(SignUpScreen))

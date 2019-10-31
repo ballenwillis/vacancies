@@ -16,7 +16,7 @@ const AppNavigator = createStackNavigator(
         }
       },
       {
-        headerMode: 'none',
+        headerMode: "none",
         navigationOptions: {
           headerVisible: false,
           header: null
@@ -30,10 +30,11 @@ const AppNavigator = createStackNavigator(
           screen: MainScreen,
           navigationOptions: ({ navigation }) => ({ title: "Projects" })
         }
-      }, {
+      },
+      {
         navigationOptions: {
           header: null
-        },
+        }
       }
     )
   },

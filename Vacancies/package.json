@@ -36,6 +36,7 @@
     "react-native-webview": "7.0.5",
     "react-navigation": "3.11.0",
     "react-request": "^3.1.2",
+    "recompose": "^0.30.0",
     "unfetch": "^4.1.0"
   },
   "prettier": {

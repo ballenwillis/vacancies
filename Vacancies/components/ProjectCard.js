@@ -1,9 +1,16 @@
 import React from "react"
 import { StyleSheet } from "react-native"
 import * as PropTypes from "prop-types"
-import { Container, CardBlock, Button, withTheme} from "@draftbit/ui"
+import { Container, CardBlock, Button, withTheme } from "@draftbit/ui"
 
-const ProjectCard = ({theme, isOwner=false, isMember=false, ownerName="Brandon Willis", title="Build a dating app!", style}) => (
+const ProjectCard = ({
+  theme,
+  isOwner = false,
+  isMember = false,
+  ownerName = "Brandon Willis",
+  title = "Build a dating app!",
+  style
+}) => (
   <Container
     style={[styles.container, style]}
     elevation={0}
@@ -20,18 +27,24 @@ const ProjectCard = ({theme, isOwner=false, isMember=false, ownerName="Brandon W
       leftDescription={ownerName}
     />
     <Container style={styles.Container_n86} elevation={0} useThemeGutterPadding={true}>
-      {isOwner ?<> <Button style={styles.Button_nl2} icon="FontAwesome/pencil" type="outline">
-        Edit Project
-      </Button>
-       <Button style={styles.Button_nl2} icon="FontAwesome/trash-o" type="outline">
-        Delete Project
-      </Button></> :
-        isMember ? null : <Button style={styles.Button_nl2} icon="FontAwesome/plus" type="outline">
-        Request To Join
-      </Button>
-        }
+      {isOwner ? (
+        <>
+          {" "}
+          <Button style={styles.Button_nl2} icon="FontAwesome/pencil" type="outline">
+            Edit Project
+          </Button>
+          <Button style={styles.Button_nl2} icon="FontAwesome/trash-o" type="outline">
+            Delete Project
+          </Button>
+        </>
+      ) : isMember ? null : (
+        <Button style={styles.Button_nl2} icon="FontAwesome/plus" type="outline">
+          Request To Join
+        </Button>
+      )}
     </Container>
-  </Container>);
+  </Container>
+)
 
 const styles = StyleSheet.create({
   Button_n3l: {
@@ -57,7 +70,6 @@ const styles = StyleSheet.create({
     borderRadius: 8
   }
 })
-
 
 ProjectCard.propTypes = { theme: PropTypes.any }
 
