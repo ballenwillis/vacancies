@@ -1,7 +1,7 @@
 -- Roles to create: vac_postgraphile, vac_anonymous, vac_user
 
 -- Creating Extensions
-CREATE EXTENSION IF NOT EXISTS uuid-ossp;
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS pgcrypto; 
 
 -- Creating Schemas
@@ -15,7 +15,7 @@ CREATE TABLE public.user (
 	first_name VARCHAR(255) NOT NULL,
 	last_name VARCHAR(255) NOT NULL,
 	about_me VARCHAR(3000) NOT NULL,
-	profile_picture_id VARCHAR(255) NOT NULL,
+	profile_picture_id INTEGER,
 	email_address VARCHAR(255) NOT NULL UNIQUE,
 	mobile VARCHAR(15) NOT NULL UNIQUE,
 	CONSTRAINT user_pk PRIMARY KEY (user_id)
@@ -38,9 +38,9 @@ CREATE TABLE public.user_image (
 
 CREATE TABLE public.user_location (
 	user_id BIGINT NOT NULL,
-	latitude double NOT NULL,
-	longitude double NOT NULL,
-	current_time TIMESTAMP NOT NULL,
+	latitude float NOT NULL,
+	longitude float NOT NULL,
+	created_at TIMESTAMP NOT NULL,
 	CONSTRAINT user_location_pk PRIMARY KEY (user_id)
 );
 
@@ -57,7 +57,7 @@ CREATE TABLE public.project (
 CREATE TABLE public.project_comment (
 	comment_id SERIAL NOT NULL,
 	commenter_id BIGINT NOT NULL,
-	project_id BIGINT(3000) NOT NULL,
+	project_id BIGINT NOT NULL,
 	content VARCHAR(3000) NOT NULL,
 	created_at TIMESTAMP DEFAULT NOW(),
 	CONSTRAINT project_comment_pk PRIMARY KEY (comment_id)
@@ -70,21 +70,21 @@ CREATE TABLE public.project_follow (
 	CONSTRAINT project_follow_pk PRIMARY KEY (follow_id)
 );
 
-CREATE TABLE public.project_member_requests (
+CREATE TABLE public.project_member_request (
 	request_id SERIAL NOT NULL,
 	user_id BIGINT NOT NULL,
 	project_id BIGINT NOT NULL,
 	is_rejected bool NOT NULL DEFAULT 'false',
 	is_accepted bool NOT NULL DEFAULT 'false',
-	request_time TIMESTAMP NOT NULL,
-	response_time bool,
-	CONSTRAINT project_member_requests_pk PRIMARY KEY (request_id)
+	response_time TIMESTAMP NOT NULL,
+	request_time TIMESTAMP DEFAULT NOW(),
+	CONSTRAINT project_member_request_pk PRIMARY KEY (request_id),
 	CONSTRAINT one_per_user_per_project UNIQUE (user_id, project_id)
 );
 
 CREATE TABLE public.project_member (
 	user_id BIGINT NOT NULL,
-	project_id BIGING NOT NULL,
+	project_id BIGINT NOT NULL,
 	join_time TIMESTAMP DEFAULT NOW()
 );
 
@@ -98,24 +98,23 @@ CREATE TYPE public.jwt_token AS (
 );
 
 -- Foreign Key Constraints
-ALTER TABLE public.user ADD CONSTRAINT user_fk0 FOREIGN KEY (user_id) REFERENCES user_account(user_id);
-ALTER TABLE public.user ADD CONSTRAINT user_fk1 FOREIGN KEY (profile_picture_id) REFERENCES user_image(image_id);
+ALTER TABLE public.user ADD CONSTRAINT user_fk0 FOREIGN KEY (user_id) REFERENCES private.user_account(user_id);
+ALTER TABLE public.user ADD CONSTRAINT user_fk1 FOREIGN KEY (profile_picture_id) REFERENCES public.user_image(image_id);
 
-ALTER TABLE public.user_image ADD CONSTRAINT user_image_fk0 FOREIGN KEY (user_id) REFERENCES user(user_id);
+ALTER TABLE public.user_image ADD CONSTRAINT user_image_fk0 FOREIGN KEY (user_id) REFERENCES public.user(user_id);
 
-ALTER TABLE public.user_location ADD CONSTRAINT user_location_fk0 FOREIGN KEY (user_id) REFERENCES user(user_id);
+ALTER TABLE public.user_location ADD CONSTRAINT user_location_fk0 FOREIGN KEY (user_id) REFERENCES public.user(user_id);
 
-ALTER TABLE public.project ADD CONSTRAINT project_fk0 FOREIGN KEY (owner_id) REFERENCES user(user_id);
+ALTER TABLE public.project ADD CONSTRAINT project_fk0 FOREIGN KEY (owner_id) REFERENCES public.user(user_id);
 
-ALTER TABLE public.project_comment ADD CONSTRAINT project_comment_fk0 FOREIGN KEY (commenter_id) REFERENCES user(user_id);
-ALTER TABLE public.project_comment ADD CONSTRAINT project_comment_fk1 FOREIGN KEY (project_id) REFERENCES project(project_id);
+ALTER TABLE public.project_comment ADD CONSTRAINT project_comment_fk0 FOREIGN KEY (commenter_id) REFERENCES public.user(user_id);
+ALTER TABLE public.project_comment ADD CONSTRAINT project_comment_fk1 FOREIGN KEY (project_id) REFERENCES public.project(project_id);
 
-ALTER TABLE public.project_follow ADD CONSTRAINT project_follow_fk0 FOREIGN KEY (follower_id) REFERENCES user(user_id);
-ALTER TABLE public.project_follow ADD CONSTRAINT project_follow_fk1 FOREIGN KEY (project_id) REFERENCES project(project_id);
+ALTER TABLE public.project_follow ADD CONSTRAINT project_follow_fk0 FOREIGN KEY (follower_id) REFERENCES public.user(user_id);
+ALTER TABLE public.project_follow ADD CONSTRAINT project_follow_fk1 FOREIGN KEY (project_id) REFERENCES public.project(project_id);
 
-ALTER TABLE public.project_member_requests ADD CONSTRAINT project_member_requests_fk0 FOREIGN KEY (user_id) REFERENCES user(user_id);
-ALTER TABLE public.project_member_requests ADD CONSTRAINT project_member_requests_fk1 FOREIGN KEY (project_id) REFERENCES project(project_id);
-ALTER TABLE public.project_member_requests ADD CONSTRAINT project_member_requests_fk2 FOREIGN KEY (is_accepted) REFERENCES project(project_id);
+ALTER TABLE public.project_member_request ADD CONSTRAINT project_member_request_fk0 FOREIGN KEY (user_id) REFERENCES public.user(user_id);
+ALTER TABLE public.project_member_request ADD CONSTRAINT project_member_request_fk1 FOREIGN KEY (project_id) REFERENCES public.project(project_id);
 
 -- Documenting Tables
 COMMENT ON TABLE public.user IS 'Non-sensitive data of a user';
@@ -132,7 +131,7 @@ ALTER TABLE public.user ENABLE ROW LEVEL SECURITY;
 CREATE POLICY select_user ON public.user FOR SELECT
 	USING (true);
     
-CREATE POLICY update_user ON public.user FOR UPDATE TO user
+CREATE POLICY update_user ON public.user FOR UPDATE
 	USING (user_id = current_setting('jwt.claims.user_id')::INTEGER);
    
 GRANT SELECT ON public.user TO vac_user, vac_anonymous;
@@ -147,7 +146,7 @@ CREATE POLICY insert_user_image ON public.user_image FOR INSERT
   WITH CHECK (user_image.user_id = current_setting('jwt.claims.user_id')::INTEGER);
 
 CREATE POLICY delete_user_image ON public.user_image FOR DELETE
-  WITH CHECK (user_image.user_id = current_setting('jwt.claims.user_id')::INTEGER); 
+  USING (user_image.user_id = current_setting('jwt.claims.user_id')::INTEGER); 
 
 GRANT SELECT ON public.user_image TO vac_user, vac_anonymous;
 GRANT INSERT, DELETE ON public.user_image TO vac_user;
@@ -202,20 +201,22 @@ CREATE POLICY delete_project_comment ON public.project_comment FOR DELETE
 -- Permissions: project_member_request
 ALTER TABLE public.project_member_request ENABLE ROW LEVEL SECURITY;
 CREATE POLICY select_project_member_request ON public.project_member_request FOR SELECT
-	USING (
-		SELECT project.owner_id 
-		FROM public.project 
-		WHERE project.project_id = select_project_member_request.project_id
-	) = current_setting('jwt.claims.user_id')::INTEGER);
+	USING (EXISTS(
+		SELECT 1 FROM public.project 
+		WHERE project.project_id = project_member_request.project_id
+		AND project.owner_id= current_setting('jwt.claims.user_id')::INTEGER)
+	);
 
 CREATE POLICY insert_project_member_request ON public.project_member_request FOR INSERT
 	WITH CHECK (
 		-- You can insert your own requests unless you already a part of the project
 		project_member_request.user_id = current_setting('jwt.claims.user_id')::INTEGER
-		AND SELECT NOT EXISTS(
-			SELECT 1 FROM public.project_member
-			WHERE project_member.project_id=project_member_request.project_id
-			AND project_member.user_id=current_setting('jwt.claims.user_id')::INTEGER
+		AND (
+			NOT EXISTS(
+				SELECT 1 FROM public.project_member
+				WHERE project_member.project_id=project_member_request.project_id
+				AND project_member.user_id=current_setting('jwt.claims.user_id')::INTEGER
+			)
 		)
 	);
 
@@ -227,8 +228,8 @@ CREATE POLICY update_project_member_request ON public.project_member_request FOR
 		OR (
 			SELECT project.owner_id 
 			FROM public.project 
-			WHERE project.project_id = select_project_member_request.project_id
-		) = current_setting('jwt.claims.user_id')::INTEGER);
+			WHERE project.project_id = project_member_request.project_id
+		) = current_setting('jwt.claims.user_id')::INTEGER
 	);
 
 GRANT SELECT, UPDATE, INSERT ON public.project_member_request TO vac_user;
@@ -239,7 +240,7 @@ CREATE FUNCTION public.register_user(
 	password TEXT
 ) RETURNS public.jwt_token AS $$
 DECLARE
-	user public.user;
+	new_user public.user;
 	NOW_SECONDS INTEGER;
 	MIN_PASSWORD_LENGTH INTEGER;
 BEGIN
@@ -251,18 +252,20 @@ BEGIN
 			RAISE EXCEPTION 'This email address is already in use. Please sign up with a different email address.';
 		END IF;
 
+		INSERT INTO public.user DEFAULT VALUES RETURNING * INTO new_user;
+
 		INSERT INTO private.user_account (user_id, email, password_hash) 
-			VALUES (user.user_id, email, crypt(password, gen_salt('bf')));
+			VALUES (new_user.user_id, email, crypt(password, gen_salt('bf')));
 
 		NOW_SECONDS = EXTRACT(epoch FROM current_timestamp);
-		RETURN ('vac_user', user.user_id, NOW_SECONDS + 7776000)::public.jwt_token;
+		RETURN ('vac_user', new_user.user_id, NOW_SECONDS + 7776000)::public.jwt_token;
 	END IF;
 END;
 $$ LANGUAGE plpgsql STRICT SECURITY DEFINER;
 
 -- Function permissions
 ALTER DEFAULT PRIVILEGES REVOKE EXECUTE ON FUNCTIONS FROM public;
-GRANT EXECUTE ON FUNCTION public.register_user(TEXT, TEXT, TEXT, TEXT) TO vac_anonymous;
+GRANT EXECUTE ON FUNCTION public.register_user(TEXT, TEXT) TO vac_anonymous;
 
 -- Grant Privileges Between Users
 GRANT vac_anonymous TO vac_postgraphile;
