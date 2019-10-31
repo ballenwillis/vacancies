@@ -31,8 +31,7 @@ class SignUpScreen extends React.Component {
           style={styles.KeyboardAvoidingView_noy}
           enabled={true}
           behavior="padding"
-          keyboardVerticalOffset={0}
-        >
+          keyboardVerticalOffset={0}>
           <Container style={styles.Container_nt4} elevation={0} useThemeGutterPadding={true}>
             <Image style={styles.Image_nrg} source={Images.BuildPng6} resizeMode="contain" />
             <Text
@@ -42,8 +41,7 @@ class SignUpScreen extends React.Component {
                 {
                   color: theme.colors.primary
                 }
-              ]}
-            >
+              ]}>
               Vacancies: Where Dreamers and Builders Create
             </Text>
           </Container>
@@ -55,8 +53,7 @@ class SignUpScreen extends React.Component {
                 {
                   color: theme.colors.medium
                 }
-              ]}
-            >
+              ]}>
               ENTER YOUR CREDENTIALS:
             </Text>
             <TextField
@@ -80,17 +77,15 @@ class SignUpScreen extends React.Component {
               type="solid"
               color={theme.colors.primary}
               onPress={() => {
-                this.props.navigation.navigate("Navigator_1")
-              }}
-            >
+                this.props.navigation.navigate("Main_App")
+              }}>
               SIGN UP
             </Button>
             <Touchable
               style={styles.Touchable_no2}
               onPress={() => {
                 this.props.navigation.navigate("LoginScreen")
-              }}
-            >
+              }}>
               <Text
                 style={[
                   styles.Text_ndm,
@@ -98,8 +93,7 @@ class SignUpScreen extends React.Component {
                   {
                     color: theme.colors.primary
                   }
-                ]}
-              >
+                ]}>
                 Already have an account? Sign In
               </Text>
             </Touchable>
@@ -112,8 +106,7 @@ class SignUpScreen extends React.Component {
                 {
                   color: theme.colors.light
                 }
-              ]}
-            >
+              ]}>
               By tapping "Sign In", you agree to our Terms of Service, Privacy Policy and Cookie
               Policy.
             </Text>

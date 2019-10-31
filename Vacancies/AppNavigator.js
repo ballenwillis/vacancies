@@ -11,17 +11,15 @@ function shouldShowBackButton(stackRouteNavigation) {
   return parent.state.routes.indexOf(stackRouteNavigation.state) > 0
 }
 
-const AppNavigator = createSwitchNavigator(
+const AppNavigator = createStackNavigator(
   {
-    Navigator: createStackNavigator(
+    AuthNavigator: createStackNavigator(
       {
         LoginScreen: {
-          screen: LoginScreen,
-          navigationOptions: ({ navigation }) => ({ title: "Login" })
+          screen: LoginScreen
         },
         SignUpScreen: {
-          screen: SignUpScreen,
-          navigationOptions: ({ navigation }) => ({ title: "Sign Up Screen" })
+          screen: SignUpScreen
         }
       },
       {
@@ -29,11 +27,11 @@ const AppNavigator = createSwitchNavigator(
         initialRouteName: "LoginScreen"
       }
     ),
-    Navigator_1: createStackNavigator(
+    Main_App: createStackNavigator(
       {
         MainScreen: {
           screen: MainScreen,
-          navigationOptions: ({ navigation }) => ({ title: "Main Screen" })
+          navigationOptions: ({ navigation }) => ({ title: "Projects" })
         }
       },
       {
@@ -44,7 +42,9 @@ const AppNavigator = createSwitchNavigator(
       }
     )
   },
-  {}
+  {
+    initialRouteName: "Main_App"
+  }
 )
 const AppContainer = createAppContainer(AppNavigator)
 

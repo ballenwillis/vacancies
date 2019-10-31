@@ -12,11 +12,7 @@
     },
     "android": {
       "package": "com.draftbit.vacancies",
-      "permissions": [
-        "ACCESS_FINE_LOCATION",
-        "ACCESS_COARSE_LOCATION",
-        "CAMERA"
-      ]
+      "permissions": ["ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION", "CAMERA"]
     },
     "privacy": "unlisted",
     "version": "1.0.0",
