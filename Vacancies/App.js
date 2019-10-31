@@ -1,6 +1,8 @@
 import * as React from "react"
 import { Provider } from "@draftbit/ui"
 import { AppLoading } from "expo"
+import { ApolloProvider } from "react-apollo"
+import client from "./config/ApolloClient"
 
 import cacheAssetsAsync from "./utilities/cacheAssetsAsync"
 import AppNavigator from "./AppNavigator"
@@ -23,7 +25,9 @@ export default class App extends React.PureComponent {
 
     return (
       <Provider>
-        <AppNavigator />
+        <ApolloProvider client={client}>
+          <AppNavigator />
+        </ApolloProvider>
       </Provider>
     )
   }
