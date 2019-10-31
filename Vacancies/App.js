@@ -1,7 +1,7 @@
 import * as React from "react"
 import { Provider } from "@draftbit/ui"
 import { AppLoading } from "expo"
-import { ApolloProvider } from "react-apollo"
+import { ApolloProvider } from "@apollo/react-hooks"
 import client from "./config/ApolloClient"
 
 import cacheAssetsAsync from "./utilities/cacheAssetsAsync"
