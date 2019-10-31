@@ -14,15 +14,15 @@ CREATE TABLE public.user (
 	user_id SERIAL NOT NULL,
 	first_name VARCHAR(255) NOT NULL,
 	last_name VARCHAR(255) NOT NULL,
-	about_me VARCHAR(3000) NOT NULL,
+	about_me VARCHAR(3000),
 	profile_picture_id INTEGER,
-	email_address VARCHAR(255) NOT NULL UNIQUE,
-	mobile VARCHAR(15) NOT NULL UNIQUE,
+	mobile VARCHAR(15) UNIQUE,
 	CONSTRAINT user_pk PRIMARY KEY (user_id)
 );
 
 CREATE TABLE private.user_account (
 	user_id SERIAL NOT NULL,
+	email VARCHAR(256) NOT NULL CHECK (email <> ''),
 	password_hash VARCHAR(255) NOT NULL,
 	created_at TIMESTAMP DEFAULT NOW(),
 	CONSTRAINT user_account_pk PRIMARY KEY (user_id)
@@ -236,11 +236,13 @@ GRANT SELECT, UPDATE, INSERT ON public.project_member_request TO vac_user;
 
 -- Create Functions
 CREATE FUNCTION public.register_user(
+	first_name TEXT,
+	last_name TEXT,
 	email TEXT,
 	password TEXT
 ) RETURNS public.jwt_token AS $$
 DECLARE
-	new_user public.user;
+	new_user private.user_account;
 	NOW_SECONDS INTEGER;
 	MIN_PASSWORD_LENGTH INTEGER;
 BEGIN
@@ -252,10 +254,11 @@ BEGIN
 			RAISE EXCEPTION 'This email address is already in use. Please sign up with a different email address.';
 		END IF;
 
-		INSERT INTO public.user DEFAULT VALUES RETURNING * INTO new_user;
+		INSERT INTO private.user_account (email, password_hash) 
+			VALUES (email, crypt(password, gen_salt('bf'))) RETURNING * INTO new_user;
 
-		INSERT INTO private.user_account (user_id, email, password_hash) 
-			VALUES (new_user.user_id, email, crypt(password, gen_salt('bf')));
+		INSERT INTO public.user(user_id, first_name, last_name) 
+			VALUES(new_user.user_id, $1, $2);
 
 		NOW_SECONDS = EXTRACT(epoch FROM current_timestamp);
 		RETURN ('vac_user', new_user.user_id, NOW_SECONDS + 7776000)::public.jwt_token;
@@ -265,7 +268,7 @@ $$ LANGUAGE plpgsql STRICT SECURITY DEFINER;
 
 -- Function permissions
 ALTER DEFAULT PRIVILEGES REVOKE EXECUTE ON FUNCTIONS FROM public;
-GRANT EXECUTE ON FUNCTION public.register_user(TEXT, TEXT) TO vac_anonymous;
+GRANT EXECUTE ON FUNCTION public.register_user(TEXT, TEXT, TEXT, TEXT) TO vac_anonymous;
 
 -- Grant Privileges Between Users
 GRANT vac_anonymous TO vac_postgraphile;
