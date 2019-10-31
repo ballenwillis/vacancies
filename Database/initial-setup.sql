@@ -180,10 +180,13 @@ CREATE POLICY select_project ON public.project FOR SELECT
   USING (true);
 
 CREATE POLICY insert_project ON public.project FOR INSERT
-  WITH CHECK (project.owner_id = current_setting('jwt.claims.user_id')::INTEGER); 
+  WITH CHECK (project.owner_id = current_setting('jwt.claims.user_id')::INTEGER);
+
+CREATE POLICY all_project ON public.project
+  USING (project.owner_id = current_setting('jwt.claims.user_id')::INTEGER);
 
 GRANT SELECT ON public.project TO vac_user, vac_anonymous;
-GRANT INSERT ON public.project TO vac_user;
+GRANT INSERT, UPDATE, DELETE ON public.project TO vac_user;
 
 -- Permissions: project_comment
 ALTER TABLE public.project_comment ENABLE ROW LEVEL SECURITY;
