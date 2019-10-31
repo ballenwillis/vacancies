@@ -19,8 +19,8 @@ class LoginScreen extends React.Component {
   }
 
   state = {
-    formEmail: "",
-    formPassword: ""
+    formEmail: "Temp@temp.com",
+    formPassword: "Temporary123"
   }
 
   async componentDidMount() {
