@@ -32,15 +32,27 @@ const ProjectCard = ({
     <Container style={styles.Container_n86} elevation={0} useThemeGutterPadding={true}>
       {isOwner ? (
         <>
-          <Button style={styles.Button_nl2} icon="FontAwesome/pencil" type="outline" onPress={onEdit}>
+          <Button
+            style={styles.Button_nl2}
+            icon="FontAwesome/pencil"
+            type="outline"
+            onPress={onEdit}>
             Edit Project
           </Button>
-          <Button style={styles.Button_nl2} icon="FontAwesome/trash-o" type="outline" onPress={onDelete}>
+          <Button
+            style={styles.Button_nl2}
+            icon="FontAwesome/trash-o"
+            type="outline"
+            onPress={onDelete}>
             Delete Project
           </Button>
         </>
       ) : isMember ? null : (
-        <Button style={styles.Button_nl2} icon="FontAwesome/plus" type="outline" onPress={onRequestJoin}>
+        <Button
+          style={styles.Button_nl2}
+          icon="FontAwesome/plus"
+          type="outline"
+          onPress={onRequestJoin}>
           Request To Join
         </Button>
       )}
