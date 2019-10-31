@@ -1,5 +1,5 @@
 import React from "react"
-import { AsyncStorage, StatusBar, StyleSheet, ActivityIndicator } from "react-native"
+import { AsyncStorage, StatusBar, StyleSheet, ActivityIndicator, FlatList } from "react-native"
 import { withTheme, ScreenContainer, Button } from "@draftbit/ui"
 import { graphql } from "react-apollo"
 import { compose } from "recompose"
@@ -15,6 +15,19 @@ class MainScreen extends React.Component {
     this.state = {
       theme: Object.assign(props.theme, screenTheme)
     }
+  }
+
+  renderItem = ({ item }) => {
+    const { theme } = this.state
+    alert(JSON.stringify(item))
+    const { ownerId, title, userByOwnerId: { firstName, lastName}} = item
+    const { GetCurrentUser: {
+      getCurrentUser: { userId }
+    }
+    } = this.props
+    const isOwner = ownerId === userId
+    const ownerName = firstName + " " + lastName
+    return <ProjectCard theme={theme} isOwner={isOwner} title={title} ownerName={ownerName}/>
   }
 
   render() {
@@ -39,7 +52,10 @@ class MainScreen extends React.Component {
 
     return (
       <ScreenContainer hasSafeArea={true} scrollable={true} style={styles.Root_nug}>
-        <ProjectCard theme={theme} />
+        <FlatList
+          data={projects}
+          renderItem={this.renderItem}
+        />
         <Button
           style={styles.Button_n3l}
           icon="FontAwesome/angle-left"
