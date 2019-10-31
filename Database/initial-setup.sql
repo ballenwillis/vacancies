@@ -83,6 +83,7 @@ CREATE TABLE public.project_member_request (
 );
 
 CREATE TABLE public.project_member (
+	member_id SERIAL NOT NULL,
 	user_id BIGINT NOT NULL,
 	project_id BIGINT NOT NULL,
 	join_time TIMESTAMP DEFAULT NOW()
@@ -253,10 +254,43 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql STRICT SECURITY DEFINER;
 
+CREATE FUNCTION public.get_current_user()
+	RETURNS public.user AS $$
+	SELECT *
+	FROM public.user
+	WHERE user_id = current_setting('jwt.claims.user_id')::INTEGER
+$$ LANGUAGE sql stable;
+
+CREATE FUNCTION public.authenticate(
+	email text,
+	password text
+) RETURNS public.jwt_token AS $$
+DECLARE
+	account private.user_account;
+	NOW_SECONDS integer;
+BEGIN
+	SELECT a.* INTO account
+	FROM private.user_account AS a
+	WHERE a.email = $1;
+
+	IF account.password_hash = crypt(password, account.password_hash) THEN
+	  NOW_SECONDS = EXTRACT(epoch FROM current_timestamp);
+		RETURN ('vac_user', account.user_id, NOW_SECONDS + 7776000)::public.jwt_token;
+	ELSE
+		RAISE EXCEPTION 'Login failed: Invalid credentials.';
+	END IF;
+END;
+$$ LANGUAGE plpgsql STRICT SECURITY DEFINER;
+
 -- Function permissions
 ALTER DEFAULT PRIVILEGES REVOKE EXECUTE ON FUNCTIONS FROM public;
 GRANT EXECUTE ON FUNCTION public.register_user(TEXT, TEXT, TEXT, TEXT) TO vac_anonymous;
+GRANT EXECUTE ON FUNCTION public.get_current_user() TO vac_user;
+GRANT EXECUTE ON FUNCTION public.authenticate(email text, password text) TO vac_anonymous; 
 
 -- Grant Privileges Between Users
 GRANT vac_anonymous TO vac_postgraphile;
 GRANT vac_user TO vac_postgraphile;
+
+-- Sequences
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO vac_anonymous, vac_user;
