@@ -7,6 +7,9 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto;
 -- Creating Schemas
 CREATE SCHEMA private;
 
+-- Schema permissions
+GRANT USAGE ON SCHEMA public TO vac_user, vac_anonymous;
+
 CREATE TABLE public.user (
 	user_id SERIAL NOT NULL,
 	first_name VARCHAR(255) NOT NULL,
@@ -21,7 +24,7 @@ CREATE TABLE public.user (
 CREATE TABLE private.user_account (
 	user_id SERIAL NOT NULL,
 	password_hash VARCHAR(255) NOT NULL,
-	created_at TIMESTAMP NOT NULL,
+	created_at TIMESTAMP DEFAULT NOW(),
 	CONSTRAINT user_account_pk PRIMARY KEY (user_id)
 );
 
@@ -47,7 +50,7 @@ CREATE TABLE public.project (
 	title VARCHAR(255) NOT NULL,
 	description VARCHAR(3000),
 	external_link VARCHAR(255),
-	created_at TIMESTAMP(3000) NOT NULL,
+	created_at TIMESTAMP DEFAULT NOW(),
 	CONSTRAINT project_pk PRIMARY KEY (project_id)
 );
 
@@ -56,7 +59,7 @@ CREATE TABLE public.project_comment (
 	commenter_id BIGINT NOT NULL,
 	project_id BIGINT(3000) NOT NULL,
 	content VARCHAR(3000) NOT NULL,
-	created_at TIMESTAMP NOT NULL,
+	created_at TIMESTAMP DEFAULT NOW(),
 	CONSTRAINT project_comment_pk PRIMARY KEY (comment_id)
 );
 
@@ -68,12 +71,21 @@ CREATE TABLE public.project_follow (
 );
 
 CREATE TABLE public.project_member_requests (
+	request_id SERIAL NOT NULL,
 	user_id BIGINT NOT NULL,
 	project_id BIGINT NOT NULL,
 	is_rejected bool NOT NULL DEFAULT 'false',
 	is_accepted bool NOT NULL DEFAULT 'false',
 	request_time TIMESTAMP NOT NULL,
-	response_time bool
+	response_time bool,
+	CONSTRAINT project_member_requests_pk PRIMARY KEY (request_id)
+	CONSTRAINT one_per_user_per_project UNIQUE (user_id, project_id)
+);
+
+CREATE TABLE public.project_member (
+	user_id BIGINT NOT NULL,
+	project_id BIGING NOT NULL,
+	join_time TIMESTAMP DEFAULT NOW()
 );
 
 -- Creating jwt token datatype for Postgraphile 
@@ -112,7 +124,114 @@ COMMENT ON TABLE public.user_image IS 'An image tied to a user''s personal accou
 COMMENT ON TABLE public.user_location IS 'A record of a user''s location at some point in time';
 COMMENT ON TABLE public.project IS 'An available project for users to be a part of';
 COMMENT ON TABLE public.project_comment IS 'A comment on a project from a user';
+COMMENT ON TABLE public.project_follow IS 'A user following a project';
 COMMENT ON TABLE public.project_member_request IS 'A user request to be a part of a project';
+
+-- Permissions: user
+ALTER TABLE public.user ENABLE ROW LEVEL SECURITY;
+CREATE POLICY select_user ON public.user FOR SELECT
+	USING (true);
+    
+CREATE POLICY update_user ON public.user FOR UPDATE TO user
+	USING (user_id = current_setting('jwt.claims.user_id')::INTEGER);
+   
+GRANT SELECT ON public.user TO vac_user, vac_anonymous;
+GRANT UPDATE ON public.user TO vac_user;
+
+-- Permissions: user_image
+ALTER TABLE public.user_image ENABLE ROW LEVEL SECURITY; 
+CREATE POLICY select_user_image ON public.user_image FOR SELECT
+  USING (true);
+
+CREATE POLICY insert_user_image ON public.user_image FOR INSERT
+  WITH CHECK (user_image.user_id = current_setting('jwt.claims.user_id')::INTEGER);
+
+CREATE POLICY delete_user_image ON public.user_image FOR DELETE
+  WITH CHECK (user_image.user_id = current_setting('jwt.claims.user_id')::INTEGER); 
+
+GRANT SELECT ON public.user_image TO vac_user, vac_anonymous;
+GRANT INSERT, DELETE ON public.user_image TO vac_user;
+
+-- Permissions: user_location
+ALTER TABLE public.user_location ENABLE ROW LEVEL SECURITY; 
+CREATE POLICY select_user_location ON public.user_location FOR SELECT
+  USING (true);
+
+CREATE POLICY insert_user_location ON public.user_location FOR INSERT
+  WITH CHECK (user_location.user_id = current_setting('jwt.claims.user_id')::INTEGER); 
+
+GRANT SELECT ON public.user_location TO vac_user, vac_anonymous;
+GRANT INSERT ON public.user_location TO vac_user;
+
+-- Permissions: project_follow
+ALTER TABLE public.project_follow ENABLE ROW LEVEL SECURITY; 
+CREATE POLICY select_project_follow ON public.project_follow FOR SELECT
+  USING (true);
+
+CREATE POLICY insert_project_follow ON public.project_follow FOR INSERT
+  WITH CHECK (project_follow.follower_id = current_setting('jwt.claims.user_id')::INTEGER); 
+
+GRANT SELECT ON public.project_follow TO vac_user, vac_anonymous;
+GRANT INSERT ON public.project_follow TO vac_user;
+
+-- Permissions: project
+ALTER TABLE public.project ENABLE ROW LEVEL SECURITY; 
+CREATE POLICY select_project ON public.project FOR SELECT
+  USING (true);
+
+CREATE POLICY insert_project ON public.project FOR INSERT
+  WITH CHECK (project.owner_id = current_setting('jwt.claims.user_id')::INTEGER); 
+
+GRANT SELECT ON public.user_location TO vac_user, vac_anonymous;
+GRANT INSERT ON public.user_location TO vac_user;
+
+-- Permissions: project_comment
+ALTER TABLE public.project_comment ENABLE ROW LEVEL SECURITY;
+CREATE POLICY select_project_comment ON public.project_comment FOR SELECT 
+	USING (true);
+    
+CREATE POLICY insert_project_comment ON public.project_comment FOR INSERT
+    WITH CHECK (project_comment.commenter_id = current_setting('jwt.claims.user_id')::INTEGER);
+
+CREATE POLICY update_project_comment ON public.project_comment FOR UPDATE
+	USING (project_comment.commenter_id = current_setting('jwt.claims.user_id')::INTEGER);
+
+CREATE POLICY delete_project_comment ON public.project_comment FOR DELETE
+	USING (project_comment.commenter_id = current_setting('jwt.claims.user_id')::INTEGER);
+
+-- Permissions: project_member_request
+ALTER TABLE public.project_member_request ENABLE ROW LEVEL SECURITY;
+CREATE POLICY select_project_member_request ON public.project_member_request FOR SELECT
+	USING (
+		SELECT project.owner_id 
+		FROM public.project 
+		WHERE project.project_id = select_project_member_request.project_id
+	) = current_setting('jwt.claims.user_id')::INTEGER);
+
+CREATE POLICY insert_project_member_request ON public.project_member_request FOR INSERT
+	WITH CHECK (
+		-- You can insert your own requests unless you already a part of the project
+		project_member_request.user_id = current_setting('jwt.claims.user_id')::INTEGER
+		AND SELECT NOT EXISTS(
+			SELECT 1 FROM public.project_member
+			WHERE project_member.project_id=project_member_request.project_id
+			AND project_member.user_id=current_setting('jwt.claims.user_id')::INTEGER
+		)
+	);
+
+CREATE POLICY update_project_member_request ON public.project_member_request FOR UPDATE
+	USING (
+		-- Own request
+		project_member_request.user_id = current_setting('jwt.claims.user_id')::INTEGER
+		-- Project owner
+		OR (
+			SELECT project.owner_id 
+			FROM public.project 
+			WHERE project.project_id = select_project_member_request.project_id
+		) = current_setting('jwt.claims.user_id')::INTEGER);
+	);
+
+GRANT SELECT, UPDATE, INSERT ON public.project_member_request TO vac_user;
 
 -- Create Functions
 CREATE FUNCTION public.register_user(
@@ -140,6 +259,10 @@ BEGIN
 	END IF;
 END;
 $$ LANGUAGE plpgsql STRICT SECURITY DEFINER;
+
+-- Function permissions
+ALTER DEFAULT PRIVILEGES REVOKE EXECUTE ON FUNCTIONS FROM public;
+GRANT EXECUTE ON FUNCTION public.register_user(TEXT, TEXT, TEXT, TEXT) TO vac_anonymous;
 
 -- Grant Privileges Between Users
 GRANT vac_anonymous TO vac_postgraphile;
