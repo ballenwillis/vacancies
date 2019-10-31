@@ -48,13 +48,14 @@ const ProjectCard = ({
           </Button>
         </>
       ) : isMember ? null : (
-        <Button
-          style={styles.Button_nl2}
-          icon="FontAwesome/plus"
-          type="outline"
-          onPress={onRequestJoin}>
-          Request To Join
-        </Button>
+        null
+        // <Button
+        //   style={styles.Button_nl2}
+        //   icon="FontAwesome/plus"
+        //   type="outline"
+        //   onPress={onRequestJoin}>
+        //   Request To Join
+        // </Button>
       )}
     </Container>
   </Container>
