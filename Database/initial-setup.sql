@@ -181,22 +181,19 @@ CREATE POLICY select_project ON public.project FOR SELECT
 CREATE POLICY insert_project ON public.project FOR INSERT
   WITH CHECK (project.owner_id = current_setting('jwt.claims.user_id')::INTEGER); 
 
-GRANT SELECT ON public.user_location TO vac_user, vac_anonymous;
-GRANT INSERT ON public.user_location TO vac_user;
+GRANT SELECT ON public.project TO vac_user, vac_anonymous;
+GRANT INSERT ON public.project TO vac_user;
 
 -- Permissions: project_comment
 ALTER TABLE public.project_comment ENABLE ROW LEVEL SECURITY;
 CREATE POLICY select_project_comment ON public.project_comment FOR SELECT 
 	USING (true);
     
-CREATE POLICY insert_project_comment ON public.project_comment FOR INSERT
+CREATE POLICY insert_project_comment ON public.project_comment
     WITH CHECK (project_comment.commenter_id = current_setting('jwt.claims.user_id')::INTEGER);
 
-CREATE POLICY update_project_comment ON public.project_comment FOR UPDATE
-	USING (project_comment.commenter_id = current_setting('jwt.claims.user_id')::INTEGER);
-
-CREATE POLICY delete_project_comment ON public.project_comment FOR DELETE
-	USING (project_comment.commenter_id = current_setting('jwt.claims.user_id')::INTEGER);
+GRANT SELECT ON public.project_comment TO vac_user, vac_anonymous;
+GRANT INSERT, UPDATE, DELETE ON public.project_comment TO vac_user;
 
 -- Permissions: project_member_request
 ALTER TABLE public.project_member_request ENABLE ROW LEVEL SECURITY;
@@ -208,17 +205,7 @@ CREATE POLICY select_project_member_request ON public.project_member_request FOR
 	);
 
 CREATE POLICY insert_project_member_request ON public.project_member_request FOR INSERT
-	WITH CHECK (
-		-- You can insert your own requests unless you already a part of the project
-		project_member_request.user_id = current_setting('jwt.claims.user_id')::INTEGER
-		AND (
-			NOT EXISTS(
-				SELECT 1 FROM public.project_member
-				WHERE project_member.project_id=project_member_request.project_id
-				AND project_member.user_id=current_setting('jwt.claims.user_id')::INTEGER
-			)
-		)
-	);
+	WITH CHECK (project_member_request.user_id = current_setting('jwt.claims.user_id')::INTEGER);
 
 CREATE POLICY update_project_member_request ON public.project_member_request FOR UPDATE
 	USING (
