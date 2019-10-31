@@ -19,13 +19,13 @@ class MainScreen extends React.Component {
 
   renderItem = ({ item }) => {
     const { theme } = this.state
-    alert(JSON.stringify(item))
     const { ownerId, title, userByOwnerId: { firstName, lastName}} = item
     const { GetCurrentUser: {
       getCurrentUser: { userId }
     }
     } = this.props
-    const isOwner = ownerId === userId
+    // TODO: Fix Database so that ownerId's come back in type int instead of string
+    const isOwner = (ownerId == userId)
     const ownerName = firstName + " " + lastName
     return <ProjectCard theme={theme} isOwner={isOwner} title={title} ownerName={ownerName}/>
   }
@@ -55,6 +55,7 @@ class MainScreen extends React.Component {
         <FlatList
           data={projects}
           renderItem={this.renderItem}
+          keyExtractor={(item) => item.projectId.toString()}
         />
         <Button
           style={styles.Button_n3l}
