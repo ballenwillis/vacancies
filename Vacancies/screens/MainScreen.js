@@ -37,9 +37,6 @@ class MainScreen extends React.Component {
       }
     } = this.props
 
-    alert(JSON.stringify(projects))
-    alert(userId)
-
     return (
       <ScreenContainer hasSafeArea={true} scrollable={true} style={styles.Root_nug}>
         <ProjectCard theme={theme} />
