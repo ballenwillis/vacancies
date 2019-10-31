@@ -168,11 +168,11 @@ ALTER TABLE public.project_follow ENABLE ROW LEVEL SECURITY;
 CREATE POLICY select_project_follow ON public.project_follow FOR SELECT
   USING (true);
 
-CREATE POLICY insert_project_follow ON public.project_follow FOR INSERT
-  WITH CHECK (project_follow.follower_id = current_setting('jwt.claims.user_id')::INTEGER); 
+CREATE POLICY all_project_follow ON public.project_follow
+  USING (project_follow.follower_id = current_setting('jwt.claims.user_id')::INTEGER); 
 
 GRANT SELECT ON public.project_follow TO vac_user, vac_anonymous;
-GRANT INSERT ON public.project_follow TO vac_user;
+GRANT UPDATE, INSERT, DELETE ON public.project_follow TO vac_user;
 
 -- Permissions: project
 ALTER TABLE public.project ENABLE ROW LEVEL SECURITY; 
