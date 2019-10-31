@@ -1,7 +1,8 @@
 import React from "react"
-import { AsyncStorage, StatusBar, StyleSheet } from "react-native"
+import { AsyncStorage, StatusBar, StyleSheet, ActivityIndicator } from "react-native"
 import { withTheme, ScreenContainer, Button } from "@draftbit/ui"
-import { compose, graphql } from "react-apollo"
+import { graphql } from "react-apollo"
+import { compose } from "recompose"
 import gql from "graphql-tag"
 import { draftbit as screenTheme } from "../config/Themes"
 import { ProjectCard } from "../components"
@@ -18,6 +19,26 @@ class MainScreen extends React.Component {
 
   render() {
     const { theme } = this.state
+    const {
+      GetAllProjects: { loading: loading1 },
+      GetCurrentUser: { loading: loading2 }
+    } = this.props
+
+    if (loading1 || loading2) return <ActivityIndicator />
+
+    const {
+      GetAllProjects: {
+        allProjects: {
+          nodes: projects
+        }
+      },
+      GetCurrentUser: {
+        getCurrentUser: { userId }
+      }
+    } = this.props
+
+    alert(JSON.stringify(projects))
+    alert(userId)
 
     return (
       <ScreenContainer hasSafeArea={true} scrollable={true} style={styles.Root_nug}>
@@ -26,8 +47,10 @@ class MainScreen extends React.Component {
           style={styles.Button_n3l}
           icon="FontAwesome/angle-left"
           type="outline"
-          onPress={async () => {await AsyncStorage.removeItem("token")
-            this.props.navigation.navigate("AuthNavigator")}}>
+          onPress={async () => {
+            await AsyncStorage.removeItem("token")
+            this.props.navigation.navigate("AuthNavigator")
+          }}>
           Logout
         </Button>
       </ScreenContainer>
@@ -47,4 +70,32 @@ const styles = StyleSheet.create({
   }
 })
 
-export default withTheme(MainScreen)
+const GET_ALL_PROJECTS = gql`
+  {
+    allProjects {
+      nodes {
+        projectId
+        ownerId
+        title
+        userByOwnerId {
+          firstName
+          lastName
+        }
+      }
+    }
+  }
+`
+
+const GET_CURRENT_USER = gql`
+  {
+    getCurrentUser {
+      userId
+    }
+  }
+`
+
+export default compose(
+  graphql(GET_ALL_PROJECTS, { name: "GetAllProjects" }),
+  graphql(GET_CURRENT_USER, { name: "GetCurrentUser" }),
+  withTheme
+)(MainScreen)

@@ -1,34 +1,36 @@
 import React from "react"
-import { StatusBar, StyleSheet, KeyboardAvoidingView, Text, AsyncStorage, TextInput } from "react-native"
-import { graphql } from "react-apollo"
-import gql from "graphql-tag";
-import { draftbit as screenTheme } from "../config/Themes"
 import {
-  withTheme,
-  ScreenContainer,
-  Container,
-  Image,
-  Button,
-  Touchable
-} from "@draftbit/ui"
+  StatusBar,
+  StyleSheet,
+  KeyboardAvoidingView,
+  Text,
+  AsyncStorage,
+  TextInput
+} from "react-native"
+import { graphql } from "react-apollo"
+import gql from "graphql-tag"
+import { withTheme, ScreenContainer, Container, Image, Button, Touchable } from "@draftbit/ui"
 import Images from "../config/Images.js"
 
 class LoginScreen extends React.Component {
   constructor(props) {
     super(props)
     StatusBar.setBarStyle("dark-content")
-
   }
 
   state = {
     formEmail: "asodjifaojsdf@zOSIDJfsaod.com",
-    formPassword: "Temporary123",
+    formPassword: "Temporary123"
+  }
+
+  async componentDidMount() {
+    await AsyncStorage.removeItem("token")
   }
 
   login = async () => {
-    const { Authenticate } = this.props;
+    const { Authenticate } = this.props
     const { formEmail, formPassword } = this.state
-    AsyncStorage.removeItem("token");
+    AsyncStorage.removeItem("token")
     try {
       const response = await Authenticate({
         variables: {
@@ -37,8 +39,8 @@ class LoginScreen extends React.Component {
             password: formPassword
           }
         }
-      });
-      await AsyncStorage.setItem("token", response.data.authenticate.jwtToken);
+      })
+      await AsyncStorage.setItem("token", response.data.authenticate.jwtToken)
       this.props.navigation.navigate("Main_App")
     } catch (e) {
       alert(e)
@@ -76,7 +78,7 @@ class LoginScreen extends React.Component {
               placeholder="joe@example.com"
               keyboardType="email-address"
               leftIconMode="inset"
-              onChangeText={(email) => this.setState({formEmail: email})}
+              onChangeText={email => this.setState({ formEmail: email })}
               value={formEmail}
             />
             <TextInput
@@ -86,7 +88,7 @@ class LoginScreen extends React.Component {
               placeholder="**********"
               leftIconMode="inset"
               secureTextEntry={true}
-              onChangeText={(password) => this.setState({formPassword: password})}
+              onChangeText={password => this.setState({ formPassword: password })}
               value={formPassword}
             />
             <Button
