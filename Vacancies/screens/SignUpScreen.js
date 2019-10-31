@@ -42,11 +42,10 @@ class SignUpScreen extends React.Component {
           }
         }
       });
-      alert(JSON.stringify(response))
       await AsyncStorage.setItem("token", response.data.registerUser.jwtToken);
       this.props.navigation.navigate("Main_App")
     } catch (e) {
-      alert(e)
+      alert("Oops... something went wrong... try again")
     }
   }
 
