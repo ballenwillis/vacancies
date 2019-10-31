@@ -5,7 +5,7 @@ import { graphql } from "react-apollo"
 import { compose } from "recompose"
 import gql from "graphql-tag"
 import { draftbit as screenTheme } from "../config/Themes"
-import { ProjectCard } from "../components"
+import { ProjectCard, TextInputDialog } from "../components"
 
 class MainScreen extends React.Component {
   constructor(props) {
@@ -13,19 +13,21 @@ class MainScreen extends React.Component {
     StatusBar.setBarStyle("dark-content")
 
     this.state = {
-      theme: Object.assign(props.theme, screenTheme)
+      theme: Object.assign(props.theme, screenTheme),
+      promptVisible: false
     }
   }
 
   onEdit = projectId => {
     return async () => {
       const { UpdateProject, GetAllProjects } = this.props
+      const randomNumber = Math.floor(Math.random() * 100)
       await UpdateProject({
         variables: {
           input: {
             projectId,
             projectPatch: {
-              title: "New Title!"
+              title: "New Title has number " + randomNumber + "!"
             }
           }
         }
@@ -154,13 +156,13 @@ const DELETE_PROJECT = gql`
 `
 
 const UPDATE_PROJECT = gql`
-mutation UpdateProject($input:UpdateProjectByProjectIdInput!){
-  updateProjectByProjectId(input:$input){
-    project{
-      projectId
+  mutation UpdateProject($input: UpdateProjectByProjectIdInput!) {
+    updateProjectByProjectId(input: $input) {
+      project {
+        projectId
+      }
     }
   }
-}
 `
 
 export default compose(
