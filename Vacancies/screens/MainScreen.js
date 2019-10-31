@@ -17,17 +17,45 @@ class MainScreen extends React.Component {
     }
   }
 
+  onDelete = projectId => {
+    return async () => {
+      const { DeleteProject, GetAllProjects } = this.props
+      await DeleteProject({
+        variables: {
+          input: {
+            projectId
+          }
+        }
+      })
+      GetAllProjects.refetch()
+    }
+  }
+
   renderItem = ({ item }) => {
     const { theme } = this.state
-    const { ownerId, title, userByOwnerId: { firstName, lastName}} = item
-    const { GetCurrentUser: {
-      getCurrentUser: { userId }
-    }
+    const {
+      projectId,
+      ownerId,
+      title,
+      userByOwnerId: { firstName, lastName }
+    } = item
+    const {
+      GetCurrentUser: {
+        getCurrentUser: { userId }
+      }
     } = this.props
     // TODO: Fix Database so that ownerId's come back in type int instead of string
-    const isOwner = (ownerId == userId)
+    const isOwner = ownerId == userId
     const ownerName = firstName + " " + lastName
-    return <ProjectCard theme={theme} isOwner={isOwner} title={title} ownerName={ownerName}/>
+    return (
+      <ProjectCard
+        theme={theme}
+        isOwner={isOwner}
+        title={title}
+        ownerName={ownerName}
+        onDelete={this.onDelete(projectId)}
+      />
+    )
   }
 
   render() {
@@ -41,12 +69,7 @@ class MainScreen extends React.Component {
 
     const {
       GetAllProjects: {
-        allProjects: {
-          nodes: projects
-        }
-      },
-      GetCurrentUser: {
-        getCurrentUser: { userId }
+        allProjects: { nodes: projects }
       }
     } = this.props
 
@@ -55,10 +78,9 @@ class MainScreen extends React.Component {
         <FlatList
           data={projects}
           renderItem={this.renderItem}
-          keyExtractor={(item) => item.projectId.toString()}
+          keyExtractor={item => item.projectId.toString()}
         />
         <Button
-          style={styles.Button_n3l}
           icon="FontAwesome/angle-left"
           type="outline"
           onPress={async () => {
@@ -78,9 +100,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     alignContent: "center",
     padding: 4
-  },
-  Button_n3l: {
-    marginTop: 32
   }
 })
 
@@ -108,8 +127,17 @@ const GET_CURRENT_USER = gql`
   }
 `
 
+const DELETE_PROJECT = gql`
+  mutation DeleteProject($input: DeleteProjectByProjectIdInput!) {
+    deleteProjectByProjectId(input: $input) {
+      deletedProjectId
+    }
+  }
+`
+
 export default compose(
   graphql(GET_ALL_PROJECTS, { name: "GetAllProjects" }),
   graphql(GET_CURRENT_USER, { name: "GetCurrentUser" }),
+  graphql(DELETE_PROJECT, { name: "DeleteProject" }),
   withTheme
 )(MainScreen)
