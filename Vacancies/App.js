@@ -1,19 +1,30 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import * as React from "react"
+import { Provider } from "@draftbit/ui"
+import { AppLoading } from "expo"
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-    </View>
-  );
+import cacheAssetsAsync from "./utilities/cacheAssetsAsync"
+import AppNavigator from "./AppNavigator"
+
+export default class App extends React.PureComponent {
+  state = {
+    isReady: false
+  }
+
+  render() {
+    if (!this.state.isReady) {
+      return (
+        <AppLoading
+          startAsync={cacheAssetsAsync}
+          onFinish={() => this.setState({ isReady: true })}
+          onError={console.warn}
+        />
+      )
+    }
+
+    return (
+      <Provider>
+        <AppNavigator />
+      </Provider>
+    )
+  }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
