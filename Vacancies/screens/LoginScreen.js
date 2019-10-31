@@ -1,5 +1,7 @@
 import React from "react"
-import { StatusBar, StyleSheet, KeyboardAvoidingView, Text } from "react-native"
+import { StatusBar, StyleSheet, KeyboardAvoidingView, Text, AsyncStorage } from "react-native"
+import { graphql } from "react-apollo"
+import gql from "graphql-tag";
 import { draftbit as screenTheme } from "../config/Themes"
 import {
   withTheme,
@@ -18,12 +20,37 @@ class LoginScreen extends React.Component {
     StatusBar.setBarStyle("dark-content")
 
     this.state = {
-      theme: Object.assign(props.theme, screenTheme)
+      theme: Object.assign(props.theme, screenTheme),
+      formEmail: "asodjifaojsdf@zOSIDJfsaod.com",
+      formPassword: "Temporary123",
+      loggingIn: false
+    }
+  }
+
+  onPress = async () => {
+    const { Authenticate } = this.props;
+    const { formEmail, formPassword } = this.state
+    AsyncStorage.removeItem("token");
+    this.setState({ loggingIn: true });
+    try {
+      const response = await Authenticate({
+        variables: {
+          input: {
+            email: formEmail,
+            password: formPassword
+          }
+        }
+      });
+      await AsyncStorage.setItem("token", response.data.authenticate.jwtToken);
+      this.props.navigation.navigate("Main_App")
+    } catch (e) {
+      alert(e)
+      this.setState({loggingIn: false})
     }
   }
 
   render() {
-    const { theme } = this.state
+    const { theme, formPassword, formEmail} = this.state
 
     return (
       <ScreenContainer hasSafeArea={true} scrollable={true} style={styles.Root_ni5}>
@@ -53,6 +80,8 @@ class LoginScreen extends React.Component {
               placeholder="joe@example.com"
               keyboardType="email-address"
               leftIconMode="inset"
+              onChange={(email) => this.setState({formEmail: email})}
+              value={formEmail}
             />
             <TextField
               style={styles.TextField_n1l}
@@ -61,14 +90,14 @@ class LoginScreen extends React.Component {
               placeholder="**********"
               leftIconMode="inset"
               secureTextEntry={true}
+              onChange={(password) => this.setState({formPassword: password})}
+              value={formPassword}
             />
             <Button
               style={styles.Button_na1}
               type="solid"
               color={theme.colors.primary}
-              onPress={() => {
-                this.props.navigation.navigate("Main_App")
-              }}>
+              onPress={this.onPress}>
               SIGN IN
             </Button>
             <Touchable
@@ -154,4 +183,12 @@ const styles = StyleSheet.create({
   }
 })
 
-export default withTheme(LoginScreen)
+const AUTHENTICATE = gql`
+  mutation Authenticate($input: AuthenticateInput!) {
+    authenticate(input: $input) {
+      jwtToken
+    }
+  }
+`
+
+export default graphql(AUTHENTICATE, { name: "Authenticate" })(withTheme(LoginScreen))
