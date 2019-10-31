@@ -1,5 +1,5 @@
 import React from "react"
-import { StatusBar, StyleSheet, KeyboardAvoidingView, Text, AsyncStorage } from "react-native"
+import { StatusBar, StyleSheet, KeyboardAvoidingView, Text, AsyncStorage, TextInput } from "react-native"
 import { graphql } from "react-apollo"
 import gql from "graphql-tag";
 import { draftbit as screenTheme } from "../config/Themes"
@@ -8,7 +8,6 @@ import {
   ScreenContainer,
   Container,
   Image,
-  TextField,
   Button,
   Touchable
 } from "@draftbit/ui"
@@ -19,19 +18,17 @@ class LoginScreen extends React.Component {
     super(props)
     StatusBar.setBarStyle("dark-content")
 
-    this.state = {
-      theme: Object.assign(props.theme, screenTheme),
-      formEmail: "asodjifaojsdf@zOSIDJfsaod.com",
-      formPassword: "Temporary123",
-      loggingIn: false
-    }
   }
 
-  onPress = async () => {
+  state = {
+    formEmail: "asodjifaojsdf@zOSIDJfsaod.com",
+    formPassword: "Temporary123",
+  }
+
+  login = async () => {
     const { Authenticate } = this.props;
     const { formEmail, formPassword } = this.state
     AsyncStorage.removeItem("token");
-    this.setState({ loggingIn: true });
     try {
       const response = await Authenticate({
         variables: {
@@ -45,13 +42,12 @@ class LoginScreen extends React.Component {
       this.props.navigation.navigate("Main_App")
     } catch (e) {
       alert(e)
-      this.setState({loggingIn: false})
     }
   }
 
   render() {
-    const { theme, formPassword, formEmail} = this.state
-
+    const { formPassword, formEmail } = this.state
+    const { theme } = this.props
     return (
       <ScreenContainer hasSafeArea={true} scrollable={true} style={styles.Root_ni5}>
         <KeyboardAvoidingView
@@ -73,31 +69,31 @@ class LoginScreen extends React.Component {
             </Text>
           </Container>
           <Container style={styles.Container_nkd} elevation={0} useThemeGutterPadding={true}>
-            <TextField
+            <TextInput
               style={styles.TextField_nds}
               type="solid"
               label="Email Address"
               placeholder="joe@example.com"
               keyboardType="email-address"
               leftIconMode="inset"
-              onChange={(email) => this.setState({formEmail: email})}
+              onChangeText={(email) => this.setState({formEmail: email})}
               value={formEmail}
             />
-            <TextField
+            <TextInput
               style={styles.TextField_n1l}
               type="solid"
               label="Password"
               placeholder="**********"
               leftIconMode="inset"
               secureTextEntry={true}
-              onChange={(password) => this.setState({formPassword: password})}
+              onChangeText={(password) => this.setState({formPassword: password})}
               value={formPassword}
             />
             <Button
               style={styles.Button_na1}
               type="solid"
               color={theme.colors.primary}
-              onPress={this.onPress}>
+              onPress={async () => await this.login()}>
               SIGN IN
             </Button>
             <Touchable
