@@ -7,7 +7,7 @@ import gql from "graphql-tag"
 import { draftbit as screenTheme } from "../config/Themes"
 import { ProjectCard } from "../components"
 
-class MainScreen extends React.Component {
+class HomeScreen extends React.Component {
     constructor(props) {
         super(props)
         StatusBar.setBarStyle("dark-content")
@@ -120,13 +120,12 @@ class MainScreen extends React.Component {
                 />
                 <Button
                     style={{marginBottom: 16}}
-                    icon="FontAwesome/angle-left"
                     type="outline"
                     onPress={this.onCreate}>
                     Create New Project
                 </Button>
                 <Button
-                    icon="FontAwesome/angle-left"
+                    // icon="FontAwesome/angle-left"
                     type="outline"
                     onPress={async () => {
                         await AsyncStorage.removeItem("token")
@@ -207,4 +206,4 @@ export default compose(
     graphql(UPDATE_PROJECT, { name: "UpdateProject" }),
     graphql(CREATE_PROJECT, {name: "CreateProject"}),
     withTheme
-)(MainScreen)
+)(HomeScreen)

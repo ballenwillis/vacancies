@@ -58,16 +58,22 @@ class LoginScreen extends React.Component {
                     behavior="padding"
                     keyboardVerticalOffset={0}>
                     <Container style={styles.Container_nt4} elevation={0} useThemeGutterPadding={true}>
-                        <Image style={styles.Image_nrg} source={Images.BuildPng6} resizeMode="contain" />
+                        <Image style={styles.Image_nrg} source={Images.Logo} resizeMode="contain" />
+                      <Text>{'\n'} </Text>
+                        <Text
+                            style={styles.Text_heading}>
+                            Vacancies: Welcome Back
+                        </Text>
+
                         <Text
                             style={[
                                 styles.Text_nie,
                                 theme.typography.headline5,
                                 {
-                                    color: theme.colors.primary
+                                    color: theme.colors.light
                                 }
                             ]}>
-                            Vacancies: Where Dreamers and Builders Create
+                            Find opportunities at UIUC
                         </Text>
                     </Container>
                     <Container style={styles.Container_nkd} elevation={0} useThemeGutterPadding={true}>
@@ -94,7 +100,7 @@ class LoginScreen extends React.Component {
                         <Button
                             style={styles.Button_na1}
                             type="solid"
-                            color={theme.colors.primary}
+                            color={theme.colors.light}
                             onPress={async () => await this.login()}>
                             SIGN IN
                         </Button>
@@ -108,7 +114,7 @@ class LoginScreen extends React.Component {
                                     styles.Text_ndm,
                                     theme.typography.button,
                                     {
-                                        color: theme.colors.primary
+                                        color: theme.colors.light
                                     }
                                 ]}>
                                 Create Account
@@ -176,6 +182,14 @@ const styles = StyleSheet.create({
         textAlign: "center",
         width: "100%"
     },
+    Text_heading:{
+        textAlign: "center",
+        fontSize:23,
+        fontWeight:'bold',
+        width: "100%"
+
+    },
+
     Touchable_no2: {
         width: "100%"
     }
