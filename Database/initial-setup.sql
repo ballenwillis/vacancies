@@ -1,3 +1,5 @@
+-- noinspection SqlNoDataSourceInspectionForFile
+
 -- Roles to create: vac_postgraphile, vac_anonymous, vac_user
 
 -- Creating Extensions

@@ -8,141 +8,144 @@ import { draftbit as screenTheme } from "../config/Themes"
 import { ProjectCard } from "../components"
 
 class MainScreen extends React.Component {
-  constructor(props) {
-    super(props)
-    StatusBar.setBarStyle("dark-content")
+    constructor(props) {
+        super(props)
+        StatusBar.setBarStyle("dark-content")
 
-    this.state = {
-      theme: Object.assign(props.theme, screenTheme)
+        this.state = {
+            theme: Object.assign(props.theme, screenTheme)
+        }
     }
-  }
 
-  onEdit = projectId => {
-    return async () => {
-      const { UpdateProject, GetAllProjects } = this.props
-      const randomNumber = Math.floor(Math.random() * 100)
-      await UpdateProject({
-        variables: {
-          input: {
-            projectId,
-            projectPatch: {
-              title: "New Title has number " + randomNumber + "!"
+    onEdit = projectId => {
+        return async () => {
+            const { UpdateProject, GetAllProjects } = this.props
+            const randomNumber = Math.floor(Math.random() * 100)
+            await UpdateProject({
+                variables: {
+                    input: {
+                        projectId,
+                        projectPatch: {
+                            title: "New Title has number " + randomNumber + "!"
+                        }
+                    }
+                }
+            })
+            GetAllProjects.refetch()
+        }
+    }
+
+    onDelete = projectId => {
+        return async () => {
+            const { DeleteProject, GetAllProjects } = this.props
+            await DeleteProject({
+                variables: {
+                    input: {
+                        projectId
+                    }
+                }
+            })
+            GetAllProjects.refetch()
+        }
+    }
+
+    onCreate = async () => {
+        const { CreateProject, GetAllProjects, GetCurrentUser: {getCurrentUser: {userId}} } = this.props
+        const randomNumber = Math.floor(Math.random() * 100)
+        await CreateProject({
+            variables: {
+                input: {
+                    project: {
+                        ownerId: userId,
+                        title: "New Title has number " + randomNumber + "!"
+                    }
+                }
             }
-          }
-        }
-      })
-      GetAllProjects.refetch()
+        })
+        GetAllProjects.refetch()
     }
-  }
 
-  onDelete = projectId => {
-    return async () => {
-      const { DeleteProject, GetAllProjects } = this.props
-      await DeleteProject({
-        variables: {
-          input: {
-            projectId
-          }
-        }
-      })
-      GetAllProjects.refetch()
+    renderItem = ({ item }) => {
+        const { theme } = this.state
+        const {
+            projectId,
+            ownerId,
+            title,
+            userByOwnerId: { firstName, lastName }
+        } = item
+
+        const {
+            GetCurrentUser: {
+                getCurrentUser: { userId }
+            }
+        } = this.props
+        // TODO: Fix Database so that ownerId's come back in type int instead of string
+        const isOwner = ownerId == userId
+        const ownerName = firstName + " " + lastName
+        return (
+            <ProjectCard
+                theme={theme}
+                isOwner={isOwner}
+                title={title}
+                ownerName={ownerName}
+                onDelete={this.onDelete(projectId)}
+                onEdit={this.onEdit(projectId)}
+                navigation={this.props.navigation}
+                projectId
+            />
+        )
     }
-  }
 
-  onCreate = async () => {
-    const { CreateProject, GetAllProjects, GetCurrentUser: {getCurrentUser: {userId}} } = this.props
-    const randomNumber = Math.floor(Math.random() * 100)
-    await CreateProject({
-      variables: {
-        input: {
-          project: {
-            ownerId: userId,
-            title: "New Title has number " + randomNumber + "!"
-          }
-        }
-      }
-    })
-    GetAllProjects.refetch()
-  }
+    render() {
+        const { theme } = this.state
+        const {
+            GetAllProjects: { loading: loading1 },
+            GetCurrentUser: { loading: loading2 }
+        } = this.props
 
-  renderItem = ({ item }) => {
-    const { theme } = this.state
-    const {
-      projectId,
-      ownerId,
-      title,
-      userByOwnerId: { firstName, lastName }
-    } = item
-    const {
-      GetCurrentUser: {
-        getCurrentUser: { userId }
-      }
-    } = this.props
-    // TODO: Fix Database so that ownerId's come back in type int instead of string
-    const isOwner = ownerId == userId
-    const ownerName = firstName + " " + lastName
-    return (
-      <ProjectCard
-        theme={theme}
-        isOwner={isOwner}
-        title={title}
-        ownerName={ownerName}
-        onDelete={this.onDelete(projectId)}
-        onEdit={this.onEdit(projectId)}
-      />
-    )
-  }
+        if (loading1 || loading2) return <ActivityIndicator />
 
-  render() {
-    const { theme } = this.state
-    const {
-      GetAllProjects: { loading: loading1 },
-      GetCurrentUser: { loading: loading2 }
-    } = this.props
+        const {
+            GetAllProjects: {
+                allProjects: { nodes: projects }
+            }
+        } = this.props
 
-    if (loading1 || loading2) return <ActivityIndicator />
-
-    const {
-      GetAllProjects: {
-        allProjects: { nodes: projects }
-      }
-    } = this.props
-
-    return (
-      <ScreenContainer hasSafeArea={true} scrollable={true} style={styles.Root_nug}>
-        <FlatList
-          data={projects}
-          renderItem={this.renderItem}
-          keyExtractor={item => item.projectId.toString()}
-        />
-        <Button
-          style={{marginBottom: 16}}
-          icon="FontAwesome/angle-left"
-          type="outline"
-          onPress={this.onCreate}>
-          Create New Project
-        </Button>
-        <Button
-          icon="FontAwesome/angle-left"
-          type="outline"
-          onPress={async () => {
-            await AsyncStorage.removeItem("token")
-            this.props.navigation.navigate("AuthNavigator")
-          }}>
-          Logout
-        </Button>
-      </ScreenContainer>
-    )
-  }
+        return (
+            <ScreenContainer hasSafeArea={true} scrollable={true} style={styles.Root_nug}>
+                <FlatList
+                    data={projects}
+                    renderItem={this.renderItem}
+                    keyExtractor={item => item.projectId.toString()}
+                />
+                <Button
+                    style={{marginBottom: 16}}
+                    icon="FontAwesome/angle-left"
+                    type="outline"
+                    onPress={this.onCreate}>
+                    Create New Project
+                </Button>
+                <Button
+                    icon="FontAwesome/angle-left"
+                    type="outline"
+                    onPress={async () => {
+                        await AsyncStorage.removeItem("token")
+                        this.props.navigation.navigate("AuthNavigator")
+                    }}>
+                    Logout
+                </Button>
+            </ScreenContainer>
+        )
+    }
 }
 
 const styles = StyleSheet.create({
-  Root_nug: {
-    flex: 1,
-    alignItems: "center",
-    alignContent: "center",
-    padding: 4
-  }
+    Root_nug: {
+        flex: 1,
+        alignItems: "center",
+        alignContent: "center",
+        padding: 4
+    }
 })
 
 const GET_ALL_PROJECTS = gql`
@@ -198,10 +201,10 @@ const CREATE_PROJECT = gql`
 `
 
 export default compose(
-  graphql(GET_ALL_PROJECTS, { name: "GetAllProjects" }),
-  graphql(GET_CURRENT_USER, { name: "GetCurrentUser" }),
-  graphql(DELETE_PROJECT, { name: "DeleteProject" }),
-  graphql(UPDATE_PROJECT, { name: "UpdateProject" }),
-  graphql(CREATE_PROJECT, {name: "CreateProject"}),
-  withTheme
+    graphql(GET_ALL_PROJECTS, { name: "GetAllProjects" }),
+    graphql(GET_CURRENT_USER, { name: "GetCurrentUser" }),
+    graphql(DELETE_PROJECT, { name: "DeleteProject" }),
+    graphql(UPDATE_PROJECT, { name: "UpdateProject" }),
+    graphql(CREATE_PROJECT, {name: "CreateProject"}),
+    withTheme
 )(MainScreen)

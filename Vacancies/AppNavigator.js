@@ -3,6 +3,7 @@ import { createAppContainer, createStackNavigator } from "react-navigation"
 import LoginScreen from "./screens/LoginScreen"
 import SignUpScreen from "./screens/SignUpScreen"
 import MainScreen from "./screens/MainScreen"
+import ProjectScreen from "./screens/ProjectScreen"
 
 const AppNavigator = createStackNavigator(
   {
@@ -29,6 +30,10 @@ const AppNavigator = createStackNavigator(
         MainScreen: {
           screen: MainScreen,
           navigationOptions: ({ navigation }) => ({ title: "Projects" })
+        },
+        ProjectScreen: {
+            screen: ProjectScreen,
+            navigationOptions: ({ navigation }) => ({ title: "SingleProject" })
         }
       },
       {
@@ -37,6 +42,7 @@ const AppNavigator = createStackNavigator(
         }
       }
     )
+
   },
   {
     initialRouteName: "AuthNavigator"
