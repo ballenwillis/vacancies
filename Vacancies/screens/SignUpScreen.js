@@ -67,16 +67,11 @@ class SignUpScreen extends React.Component {
                     behavior="padding"
                     keyboardVerticalOffset={0}>
                     <Container style={styles.Container_nt4} elevation={0} useThemeGutterPadding={true}>
-                        <Image style={styles.Image_nrg} source={Images.BuildPng6} resizeMode="contain" />
+                        <Image style={styles.Image_nrg} source={Images.Logo} resizeMode="contain" />
+                        <Text>{'\n'}</Text>
                         <Text
-                            style={[
-                                styles.Text_nie,
-                                theme.typography.headline5,
-                                {
-                                    color: theme.colors.primary
-                                }
-                            ]}>
-                            Vacancies: Where Dreamers and Builders Create
+                            style={styles.Text_heading}>
+                            Vacancies: Register
                         </Text>
                     </Container>
                     <Container style={styles.Container_nkd} elevation={0} useThemeGutterPadding={true}>
@@ -121,7 +116,7 @@ class SignUpScreen extends React.Component {
                         <Button
                             style={styles.Button_na1}
                             type="solid"
-                            color={theme.colors.primary}
+                            color={theme.colors.light}
                             onPress={async () => await this.signUp()}>
                             SIGN UP
                         </Button>
@@ -135,7 +130,7 @@ class SignUpScreen extends React.Component {
                                     styles.Text_ndm,
                                     theme.typography.button,
                                     {
-                                        color: theme.colors.primary
+                                        color: theme.colors.light
                                     }
                                 ]}>
                                 Already have an account? Sign In
@@ -201,6 +196,12 @@ const styles = StyleSheet.create({
     },
     Text_nie: {
         textAlign: "center",
+        width: "100%"
+    },
+    Text_heading:{
+        textAlign: "center",
+        fontSize:23,
+        fontWeight:'bold',
         width: "100%"
     },
     Touchable_no2: {
