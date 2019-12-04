@@ -23,7 +23,8 @@ class PostScreen extends React.Component {
         companyName: "Default Company Name",
         companyDetails: "Default Company Details",
         vacancyPay: "Deafult Pay (if applicable)",
-        imageUrl: ""
+        /* Default image */
+        imageUrl: "https://apps-draftbit-com.s3.amazonaws.com/apps/zYTsJNxi/assets/9e8d5125-43b4-4e87-ab69-a16a93d67a50"
     }
 
     // post = async() => {
@@ -31,17 +32,17 @@ class PostScreen extends React.Component {
     // }
 
     onCreate = async () => {
-        const { companyName, companyDetails, vacancyPay } = this.state
+        const { companyName, companyDetails, vacancyPay, imageUrl } = this.state
         const { CreateProject, GetAllProjects, GetCurrentUser: {getCurrentUser: {userId}} } = this.props
 
-        alert(companyName)
         await CreateProject({
             variables: {
                 input: {
                     project: {
                         ownerId: userId,
                         title: companyName,
-                        description: companyDetails
+                        description: companyDetails,
+                        external_link: imageUrl
                     }
                 }
             }

@@ -1,6 +1,5 @@
 import React from "react"
 import { createAppContainer, createStackNavigator, createBottomTabNavigator } from "react-navigation"
-import Icon from 'react-native-vector-icons/FontAwesome5'
 import { Ionicons } from '@expo/vector-icons';
 import LoginScreen from "./screens/LoginScreen"
 import SignUpScreen from "./screens/SignUpScreen"

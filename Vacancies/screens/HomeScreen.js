@@ -71,6 +71,8 @@ class HomeScreen extends React.Component {
             projectId,
             ownerId,
             title,
+            description,
+            external_link,
             userByOwnerId: { firstName, lastName }
         } = item
 
@@ -87,6 +89,8 @@ class HomeScreen extends React.Component {
                 theme={theme}
                 isOwner={isOwner}
                 title={title}
+                description = {description}
+                external_link = {external_link}
                 ownerName={ownerName}
                 onDelete={this.onDelete(projectId)}
                 onEdit={this.onEdit(projectId)}
@@ -125,7 +129,7 @@ class HomeScreen extends React.Component {
                     {/*Create New Project*/}
                 {/*</Button>*/}
                 <Button
-                    // icon="FontAwesome/angle-left"
+                    icon="FontAwesome/angle-left"
                     type="outline"
                     onPress={async () => {
                         await AsyncStorage.removeItem("token")
@@ -154,6 +158,7 @@ const GET_ALL_PROJECTS = gql`
         projectId
         ownerId
         title
+        description
         userByOwnerId {
           firstName
           lastName
