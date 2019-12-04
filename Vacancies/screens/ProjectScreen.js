@@ -21,7 +21,7 @@ class ProjectScreen extends React.Component {
     }
 
     render() {
-        return (<Text> Hello  </Text>)
+        return (<Text> {console.log(this.props.navigation.getParam('projectId'))}  </Text>)
 
     }
 }

@@ -5,7 +5,8 @@ import {
     KeyboardAvoidingView,
     Text,
     AsyncStorage,
-    TextInput
+    TextInput,
+    Picker
 } from "react-native"
 import { graphql } from "react-apollo"
 import gql from "graphql-tag"
@@ -31,7 +32,10 @@ class SignUpScreen extends React.Component {
         formFirstName: "",
         formLastName: "",
         formEmail: "",
-        formPassword: ""
+        formPassword: "",
+        formWorkHistory: "",
+        formWorkSkills: "",
+        formWorkSector: ""
     }
 
     signUp = async () => {
@@ -57,7 +61,7 @@ class SignUpScreen extends React.Component {
     }
 
     render() {
-        const { formFirstName, formLastName, formEmail, formPassword, loggingIn } = this.state
+        const { formFirstName, formLastName, formEmail, formPassword, formWorkHistory, formWorkSkills, formWorkSector, loggingIn } = this.state
         const { theme } = this.props
         return (
             <ScreenContainer hasSafeArea={true} scrollable={true} style={styles.Root_ni5}>
@@ -103,6 +107,44 @@ class SignUpScreen extends React.Component {
                             onChangeText={email => this.setState({ formEmail: email })}
                             value={formEmail}
                         />
+
+                      <TextInput
+                        style={styles.TextField_nds}
+                        type="solid"
+                        label="Work History"
+                        placeholder="Work History: ex. Nasa Embedded Engineer 5 Years..."
+                        leftIconMode="inset"
+                        onChangeText={workHistory => this.setState({ formWorkHistory: workHistory })}
+                        value={formWorkHistory}
+                      />
+
+                      <TextInput
+                        style={styles.TextField_nds}
+                        type="solid"
+                        label="Work Skills"
+                        placeholder="Work Skills: Leadership, Hospitality, Engineering...etc."
+                        leftIconMode="inset"
+                        onChangeText={workSkill => this.setState({ formWorkSkills: workSkill })}
+                        value={formWorkSkills}
+                      />
+
+                      <Picker
+                        selectedValue={formWorkSector}
+                        // style={{height: 50, width: 100}}
+                        onValueChange={(itemValue, itemIndex) =>
+                          this.setState({formWorkSector: itemValue})
+                        }>
+                        <Picker.Item label="Healthcare" value="Healthcare" />
+                        <Picker.Item label="Information Technology" value="Information Technology" />
+                        <Picker.Item label="Real Estate" value="Real Estate" />
+                        <Picker.Item label="Retail" value="Retail" />
+                        <Picker.Item label="Education" value="Education" />
+                        <Picker.Item label="Government" value="Government" />
+                        <Picker.Item label="Transportation" value="Transportation" />
+                        <Picker.Item label="Food" value="Food" />
+
+                      </Picker>
+
                         <TextInput
                             style={styles.TextField_n1l}
                             type="solid"

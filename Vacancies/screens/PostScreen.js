@@ -134,17 +134,17 @@ class PostScreen extends React.Component {
                             onChangeText={details => this.setState({ companyDetails: details })}
                         />
 
+                          <TextInput
+                            style={styles.TextField_nds}
+                            type="solid"
+                            label="Image URL"
+                            placeholder="Image URL"
+                            leftIconMode="inset"
+                            onChangeText={url => this.setState({ imageUrl: url })}
+
+                          />
+
                       <TextInput
-                        style={styles.TextField_nds}
-                        type="solid"
-                        label="Image URL"
-                        placeholder="Image URL"
-                        leftIconMode="inset"
-                        onChangeText={url => this.setState({ imageUrl: url })}
-
-                      />
-
-                        <TextInput
                             style={styles.TextField_nds}
                             type="solid"
                             label="Pay (if applicable)"
@@ -152,16 +152,16 @@ class PostScreen extends React.Component {
                             leftIconMode="inset"
                             keyboardType = "decimal-pad"
                             onChangeText={pay => this.setState({ vacancyPay: pay })}
-                        />
+                      />
 
 
-                        <Button
+                      <Button
                             style={styles.Button_na1}
                             type="solid"
                             color={theme.colors.light}
                             onPress={async () => await this.onCreate()}>
                             POST
-                        </Button>
+                      </Button>
 
                     </Container>
                     <Container style={styles.Container_nfd} elevation={0} useThemeGutterPadding={true}>
