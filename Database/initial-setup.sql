@@ -18,6 +18,9 @@ CREATE TABLE public.user (
 	last_name VARCHAR(255) NOT NULL,
 	about_me VARCHAR(3000),
 	profile_picture_id INTEGER,
+	work_history VARCHAR(1000),
+	work_skills VARCHAR(1000),
+	sector VARCHAR (255),
 	mobile VARCHAR(15) UNIQUE,
 	CONSTRAINT user_pk PRIMARY KEY (user_id)
 );
@@ -51,6 +54,7 @@ CREATE TABLE public.project (
 	owner_id BIGINT NOT NULL,
 	title VARCHAR(255) NOT NULL,
 	description VARCHAR(3000),
+	sector VARCHAR (255),
 	external_link VARCHAR(255),
 	created_at TIMESTAMP DEFAULT NOW(),
 	CONSTRAINT project_pk PRIMARY KEY (project_id)
@@ -232,7 +236,10 @@ CREATE FUNCTION public.register_user(
 	first_name TEXT,
 	last_name TEXT,
 	email TEXT,
-	password TEXT
+	password TEXT,
+	work_history TEXT,
+	work_skills TEXT,
+	sector TEXT
 ) RETURNS public.jwt_token AS $$
 DECLARE
 	new_user private.user_account;
@@ -250,8 +257,8 @@ BEGIN
 		INSERT INTO private.user_account (email, password_hash) 
 			VALUES (email, crypt(password, gen_salt('bf'))) RETURNING * INTO new_user;
 
-		INSERT INTO public.user(user_id, first_name, last_name) 
-			VALUES(new_user.user_id, $1, $2);
+		INSERT INTO public.user(user_id, first_name, last_name, work_history, work_skills, sector)
+			VALUES(new_user.user_id, $1, $2, $5, $6, $7);
 
 		NOW_SECONDS = EXTRACT(epoch FROM current_timestamp);
 		RETURN ('vac_user', new_user.user_id, NOW_SECONDS + 7776000)::public.jwt_token;
@@ -289,7 +296,7 @@ $$ LANGUAGE plpgsql STRICT SECURITY DEFINER;
 
 -- Function permissions
 ALTER DEFAULT PRIVILEGES REVOKE EXECUTE ON FUNCTIONS FROM public;
-GRANT EXECUTE ON FUNCTION public.register_user(TEXT, TEXT, TEXT, TEXT) TO vac_anonymous;
+GRANT EXECUTE ON FUNCTION public.register_user(TEXT, TEXT, TEXT, TEXT, TEXT, TEXT, TEXT) TO vac_anonymous;
 GRANT EXECUTE ON FUNCTION public.get_current_user() TO vac_user;
 GRANT EXECUTE ON FUNCTION public.authenticate(email text, password text) TO vac_anonymous; 
 
