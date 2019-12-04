@@ -1,5 +1,5 @@
 import React from "react"
-import { Text, StyleSheet, Image} from "react-native"
+import { Text, StyleSheet, TouchableOpacity, Image} from "react-native"
 import * as PropTypes from "prop-types"
 import { Container, CardBlock, Button, withTheme } from "@draftbit/ui"
 import AdaptiveCard from 'adaptivecards-reactnative'
@@ -112,64 +112,65 @@ const getCardJson = (ownerName, title, description, createdAt) => {
     ]
   }
   }
-  // @TODO make it touchable to project screen
+
   return(
+    <TouchableOpacity onPress = {onPress}>
+      <Container>
+        <CardBlock
+          style={styles.CardBlock_nve}
+          icon="MaterialIcons/cloud"
+          image={externalLink}
+          elevation={1}
+          numColumns={3}
+          aspectRatio={1.5}
+        />
+      <Container
+        style={[styles.container, style]}
+        elevation={0}
+        borderColor={theme.colors.divider}
+        useThemeGutterPadding={true}>
+        <AdaptiveCard payload={getCardJson(ownerName, title, description, createdAt)}/>
 
-    <Container>
-      <CardBlock
-        style={styles.CardBlock_nve}
-        icon="MaterialIcons/cloud"
-        image={externalLink}
-        elevation={1}
-        numColumns={3}
-        aspectRatio={1.5}
-      />
-    <Container
-      style={[styles.container, style]}
-      elevation={0}
-      borderColor={theme.colors.divider}
-      useThemeGutterPadding={true}>
-      <AdaptiveCard payload={getCardJson(ownerName, title, description, createdAt)}/>
+
+
+        <Container style={styles.Container_n86} elevation={0} useThemeGutterPadding={true}>
+          {isOwner ? (
+            <>
+              <Button
+                style={styles.Button_nl2}
+                icon="FontAwesome/pencil"
+                type="outline"
+                onPress={onEdit}>
+                Edit Project
+              </Button>
+              <Button
+                style={styles.Button_nl2}
+                icon="FontAwesome/trash-o"
+                type="outline"
+                onPress={onDelete}>
+                Delete Project
+              </Button>
+            </>
+          ) : isMember ? null : (
+            null
+            // <Button
+            //   style={styles.Button_nl2}
+            //   icon="FontAwesome/plus"
+            //   type="outline"
+            //   onPress={onRequestJoin}>
+            //   Request To Join
+            // </Button>
+          )}
+        </Container>
 
 
 
-      <Container style={styles.Container_n86} elevation={0} useThemeGutterPadding={true}>
-        {isOwner ? (
-          <>
-            <Button
-              style={styles.Button_nl2}
-              icon="FontAwesome/pencil"
-              type="outline"
-              onPress={onEdit}>
-              Edit Project
-            </Button>
-            <Button
-              style={styles.Button_nl2}
-              icon="FontAwesome/trash-o"
-              type="outline"
-              onPress={onDelete}>
-              Delete Project
-            </Button>
-          </>
-        ) : isMember ? null : (
-          null
-          // <Button
-          //   style={styles.Button_nl2}
-          //   icon="FontAwesome/plus"
-          //   type="outline"
-          //   onPress={onRequestJoin}>
-          //   Request To Join
-          // </Button>
-        )}
+
+        </Container>
+          <Text> {'\n'} </Text>
+
       </Container>
-
-
-
-
-      </Container>
-    <Text> {'\n'} </Text>
-
-  </Container>
+    </TouchableOpacity>
 
 
 )}
