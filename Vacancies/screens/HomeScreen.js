@@ -65,6 +65,10 @@ class HomeScreen extends React.Component {
         GetAllProjects.refetch()
     }
 
+    sort = async() => {
+        alert('Hello')
+    }
+
     renderItem = ({ item }) => {
         const { theme } = this.state
         const {
@@ -126,6 +130,13 @@ class HomeScreen extends React.Component {
                     renderItem={this.renderItem}
                     keyExtractor={item => item.projectId.toString()}
                 />
+
+              <Button
+              style={{marginBottom: 16}}
+              type="outline"
+              onPress={this.sort}>
+              Find Vacancies!
+              </Button>
                 {/*<Button*/}
                     {/*style={{marginBottom: 16}}*/}
                     {/*type="outline"*/}

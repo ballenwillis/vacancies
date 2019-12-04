@@ -40,7 +40,7 @@ class SignUpScreen extends React.Component {
 
     signUp = async () => {
         const { RegisterUser } = this.props
-        const { formFirstName, formLastName, formEmail, formPassword } = this.state
+        const { formFirstName, formLastName, formEmail, formPassword, formWorkHistory, formWorkSector, formWorkSkills } = this.state
         AsyncStorage.removeItem("token")
         try {
             const response = await RegisterUser({
@@ -49,6 +49,9 @@ class SignUpScreen extends React.Component {
                         firstName: formFirstName,
                         lastName: formLastName,
                         email: formEmail,
+                        work_history:formWorkHistory,
+                        work_skills:formWorkSkills,
+                        sector:formWorkSector,
                         password: formPassword
                     }
                 }
@@ -79,6 +82,11 @@ class SignUpScreen extends React.Component {
                         </Text>
                     </Container>
                     <Container style={styles.Container_nkd} elevation={0} useThemeGutterPadding={true}>
+
+                      <Text
+                        style={styles.TextField_Label}>
+                        First Name
+                      </Text>
                         <TextInput
                             style={styles.TextField_nds}
                             type="solid"
@@ -88,6 +96,11 @@ class SignUpScreen extends React.Component {
                             onChangeText={firstName => this.setState({ formFirstName: firstName })}
                             value={formFirstName}
                         />
+
+                      <Text
+                        style={styles.TextField_Label}>
+                        Last Name
+                      </Text>
                         <TextInput
                             style={styles.TextField_nds}
                             type="solid"
@@ -97,6 +110,11 @@ class SignUpScreen extends React.Component {
                             onChangeText={lastName => this.setState({ formLastName: lastName })}
                             value={formLastName}
                         />
+
+                      <Text
+                        style={styles.TextField_Label}>
+                        Email Address
+                      </Text>
                         <TextInput
                             style={styles.TextField_nds}
                             type="solid"
@@ -108,16 +126,25 @@ class SignUpScreen extends React.Component {
                             value={formEmail}
                         />
 
+                      <Text
+                        style={styles.TextField_Label}>
+                        Work History
+                      </Text>
                       <TextInput
                         style={styles.TextField_nds}
                         type="solid"
                         label="Work History"
+                        multiline = {true}
+                        numberOfLines={4}
                         placeholder="Work History: ex. Nasa Embedded Engineer 5 Years..."
                         leftIconMode="inset"
                         onChangeText={workHistory => this.setState({ formWorkHistory: workHistory })}
                         value={formWorkHistory}
                       />
-
+                      <Text
+                        style={styles.TextField_Label}>
+                        Work Skills
+                      </Text>
                       <TextInput
                         style={styles.TextField_nds}
                         type="solid"
@@ -127,6 +154,12 @@ class SignUpScreen extends React.Component {
                         onChangeText={workSkill => this.setState({ formWorkSkills: workSkill })}
                         value={formWorkSkills}
                       />
+
+
+                      <Text
+                        style={styles.TextField_Label}>
+                        Work Sector
+                      </Text>
 
                       <Picker
                         selectedValue={formWorkSector}
@@ -144,6 +177,11 @@ class SignUpScreen extends React.Component {
                         <Picker.Item label="Food" value="Food" />
 
                       </Picker>
+
+                      <Text
+                        style={styles.TextField_Label}>
+                          Password
+                      </Text>
 
                         <TextInput
                             style={styles.TextField_n1l}
@@ -248,6 +286,9 @@ const styles = StyleSheet.create({
     },
     Touchable_no2: {
         width: "100%"
+    },
+    TextField_Label:{
+        marginTop: 15
     }
 })
 
