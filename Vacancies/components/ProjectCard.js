@@ -3,6 +3,7 @@ import { Text, StyleSheet } from "react-native"
 import * as PropTypes from "prop-types"
 import { Container, CardBlock, Button, withTheme } from "@draftbit/ui"
 import AdaptiveCard from 'adaptivecards-reactnative'
+import Moment from 'moment'
 
 const ProjectCard = ({
                          theme,
@@ -17,13 +18,14 @@ const ProjectCard = ({
                          navigation,
                          description,
                          external_link,
+                         createdAt,
                          projectId
                      }) => {
 
   const onPress = () =>  {
       navigation.navigate("ProjectScreen", {projectId})
   }
-const getCardJson = (title, description) => {
+const getCardJson = (ownerName, title, description, createdAt) => {
   return {"$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
       "type": "AdaptiveCard",
       "version": "1.0",
@@ -58,14 +60,14 @@ const getCardJson = (title, description) => {
                 "items": [
                   {
                     "type": "TextBlock",
-                    "text": "Matt Hidinger",
+                    "text": ownerName,
                     "weight": "bolder",
                     "wrap": true
                   },
                   {
                     "type": "TextBlock",
                     "spacing": "none",
-                    "text": "Created {{DATE(2017-02-14T06:08:39Z, SHORT)}}",
+                    "text": "Created: " + Moment(createdAt).format('MMMM Do, YYYY'),
                     "isSubtle": true,
                     "wrap": true
                   }
@@ -142,7 +144,7 @@ const getCardJson = (title, description) => {
       elevation={0}
       borderColor={theme.colors.divider}
       useThemeGutterPadding={true}>
-      <AdaptiveCard payload={getCardJson(title, description)}/>
+      <AdaptiveCard payload={getCardJson(ownerName, title, description, createdAt)}/>
 
 
 
