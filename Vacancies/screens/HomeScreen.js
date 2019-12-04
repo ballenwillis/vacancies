@@ -72,7 +72,7 @@ class HomeScreen extends React.Component {
             ownerId,
             title,
             description,
-            external_link,
+            externalLink,
             createdAt,
             userByOwnerId: { firstName, lastName }
         } = item
@@ -91,7 +91,7 @@ class HomeScreen extends React.Component {
                 isOwner={isOwner}
                 title={title}
                 description = {description}
-                external_link = {external_link}
+                externalLink = {externalLink}
                 ownerName={ownerName}
                 onDelete={this.onDelete(projectId)}
                 onEdit={this.onEdit(projectId)}
@@ -162,6 +162,7 @@ const GET_ALL_PROJECTS = gql`
         title
         description
         createdAt
+        externalLink
         userByOwnerId {
           firstName
           lastName

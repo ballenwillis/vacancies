@@ -22,7 +22,7 @@ class PostScreen extends React.Component {
     state = {
         companyName: "Default Company Name",
         companyDetails: "Default Company Details",
-        vacancyPay: "Deafult Pay (if applicable)",
+        vacancyPay: "Default Pay (if applicable)",
         /* Default image */
         imageUrl: "https://apps-draftbit-com.s3.amazonaws.com/apps/zYTsJNxi/assets/9e8d5125-43b4-4e87-ab69-a16a93d67a50"
     }
@@ -34,7 +34,7 @@ class PostScreen extends React.Component {
     onCreate = async () => {
         const { companyName, companyDetails, vacancyPay, imageUrl } = this.state
         const { CreateProject, GetAllProjects, GetCurrentUser: {getCurrentUser: {userId}} } = this.props
-
+        alert(imageUrl)
         await CreateProject({
             variables: {
                 input: {
@@ -42,7 +42,7 @@ class PostScreen extends React.Component {
                         ownerId: userId,
                         title: companyName,
                         description: companyDetails,
-                        external_link: imageUrl
+                        externalLink: imageUrl
                     }
                 }
             }
@@ -98,6 +98,16 @@ class PostScreen extends React.Component {
                             onChangeText={details => this.setState({ companyDetails: details })}
 
                         />
+
+                      <TextInput
+                        style={styles.TextField_nds}
+                        type="solid"
+                        label="Image URL"
+                        placeholder="Image URL"
+                        leftIconMode="inset"
+                        onChangeText={image_url => this.setState({ external_link: image_url })}
+
+                      />
 
                         <TextInput
                             style={styles.TextField_nds}
@@ -200,6 +210,8 @@ const GET_ALL_PROJECTS = gql`
         projectId
         ownerId
         title
+        externalLink
+        createdAt
         userByOwnerId {
           firstName
           lastName
