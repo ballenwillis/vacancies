@@ -11,6 +11,7 @@ import { graphql } from "react-apollo"
 import gql from "graphql-tag"
 import { withTheme, ScreenContainer, Container, Image, Button, Touchable } from "@draftbit/ui"
 import Images from "../config/Images.js"
+import {compose} from "recompose";
 
 class PostScreen extends React.Component {
     constructor(props) {
@@ -19,34 +20,35 @@ class PostScreen extends React.Component {
     }
 
     state = {
-        companyName: "Company Name",
-        companyDetails: "Company Details",
-        vacancyPay: "Pay (if applicable)"
+        companyName: "Default Company Name",
+        companyDetails: "Default Company Details",
+        vacancyPay: "Deafult Pay (if applicable)",
+        imageUrl: ""
     }
 
-    post = async() => {
-
-    }
-
-    // login = async () => {
-    //     const { Authenticate } = this.props
-    //     const { formEmail, formPassword } = this.state
-    //     AsyncStorage.removeItem("token")
-    //     try {
-    //         const response = await Authenticate({
-    //             variables: {
-    //                 input: {
-    //                     email: formEmail,
-    //                     password: formPassword
-    //                 }
-    //             }
-    //         })
-    //         await AsyncStorage.setItem("token", response.data.authenticate.jwtToken)
-    //         this.props.navigation.navigate("Main_App")
-    //     } catch (e) {
-    //         alert(e)
-    //     }
+    // post = async() => {
+    //
     // }
+
+    onCreate = async () => {
+        const { companyName, companyDetails, vacancyPay } = this.state
+        const { CreateProject, GetAllProjects, GetCurrentUser: {getCurrentUser: {userId}} } = this.props
+
+        alert(companyName)
+        await CreateProject({
+            variables: {
+                input: {
+                    project: {
+                        ownerId: userId,
+                        title: companyName,
+                        description: companyDetails
+                    }
+                }
+            }
+        })
+
+        GetAllProjects.refetch()
+    }
 
     render() {
         const { companyName, companyDetails, vacancyPay } = this.state
@@ -107,12 +109,11 @@ class PostScreen extends React.Component {
                         />
 
 
-
                         <Button
                             style={styles.Button_na1}
                             type="solid"
                             color={theme.colors.light}
-                            onPress={async () => await this.post()}>
+                            onPress={async () => await this.onCreate()}>
                             POST
                         </Button>
 
@@ -191,5 +192,64 @@ const styles = StyleSheet.create({
     }
 })
 
+const GET_ALL_PROJECTS = gql`
+  {
+    allProjects {
+      nodes {
+        projectId
+        ownerId
+        title
+        userByOwnerId {
+          firstName
+          lastName
+        }
+      }
+    }
+  }
+`
 
-export default (withTheme(PostScreen))
+const GET_CURRENT_USER = gql`
+  {
+    getCurrentUser {
+      userId
+    }
+  }
+`
+
+const DELETE_PROJECT = gql`
+  mutation DeleteProject($input: DeleteProjectByProjectIdInput!) {
+    deleteProjectByProjectId(input: $input) {
+      deletedProjectId
+    }
+  }
+`
+
+const UPDATE_PROJECT = gql`
+  mutation UpdateProject($input: UpdateProjectByProjectIdInput!) {
+    updateProjectByProjectId(input: $input) {
+      project {
+        projectId
+      }
+    }
+  }
+`
+
+const CREATE_PROJECT = gql` 
+  mutation CreateProject($input:CreateProjectInput!){
+    createProject(input:$input){
+      project{
+        projectId
+      }
+    }
+  }
+`
+
+
+export default compose(
+    graphql(GET_ALL_PROJECTS, { name: "GetAllProjects" }),
+    graphql(GET_CURRENT_USER, { name: "GetCurrentUser" }),
+    graphql(DELETE_PROJECT, { name: "DeleteProject" }),
+    graphql(UPDATE_PROJECT, { name: "UpdateProject" }),
+    graphql(CREATE_PROJECT, {name: "CreateProject"}),
+    withTheme
+)(PostScreen)
