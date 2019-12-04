@@ -86,6 +86,7 @@ class HomeScreen extends React.Component {
         const isOwner = ownerId == userId
         const ownerName = firstName + " " + lastName
         return (
+
             <ProjectCard
                 theme={theme}
                 isOwner={isOwner}
@@ -99,6 +100,7 @@ class HomeScreen extends React.Component {
                 createdAt = {createdAt}
                 projectId
             />
+
         )
     }
 
