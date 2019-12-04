@@ -1,6 +1,6 @@
 import React from "react"
 import { createAppContainer, createStackNavigator, createBottomTabNavigator } from "react-navigation"
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons'
 import LoginScreen from "./screens/LoginScreen"
 import SignUpScreen from "./screens/SignUpScreen"
 import ProjectScreen from "./screens/ProjectScreen"
@@ -33,7 +33,7 @@ const AppNavigator = createStackNavigator(
                 HomeScreen: {
                     screen: HomeScreen,
                     navigationOptions: ({ navigation }) => ({ tabBarLabel: "Home",
-                        tabBarIcon: ({tintColor}) => (<Ionicons name="ios-home" size={24}  />)
+                        tabBarIcon: ({tintColor}) => ( <Ionicons name="md-checkmark-circle" size={32} color="green" />)
                     })
 
                 },
