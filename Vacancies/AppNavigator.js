@@ -46,8 +46,6 @@ const AppNavigator = createStackNavigator(
                 },
 
 
-
-
         }, {
                 tabBarOptions:{
                     activeTintColor: 'red',
