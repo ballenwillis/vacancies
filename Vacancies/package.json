@@ -53,5 +53,8 @@
     "arrowParens": "avoid",
     "trailingComma": "none",
     "jsxBracketSameLine": true
+  },
+  "devDependencies": {
+    "json-loader": "^0.5.7"
   }
 }

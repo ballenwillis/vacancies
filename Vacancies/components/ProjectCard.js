@@ -1,5 +1,5 @@
 import React from "react"
-import { Text, StyleSheet } from "react-native"
+import { Text, StyleSheet, Image} from "react-native"
 import * as PropTypes from "prop-types"
 import { Container, CardBlock, Button, withTheme } from "@draftbit/ui"
 import AdaptiveCard from 'adaptivecards-reactnative'
@@ -17,7 +17,7 @@ const ProjectCard = ({
                          onRequestJoin = () => {},
                          navigation,
                          description,
-                         external_link,
+                         externalLink,
                          createdAt,
                          projectId
                      }) => {
@@ -116,6 +116,14 @@ const getCardJson = (ownerName, title, description, createdAt) => {
   return(
 
     <Container>
+      <CardBlock
+        style={styles.CardBlock_nve}
+        icon="MaterialIcons/cloud"
+        image={externalLink}
+        elevation={1}
+        numColumns={3}
+        aspectRatio={1.5}
+      />
     <Container
       style={[styles.container, style]}
       elevation={0}
@@ -178,7 +186,10 @@ const styles = StyleSheet.create({
     CardBlock_nve: {
         padding: 4,
         paddingTop: 0,
-        marginTop: 32
+        marginTop: 10,
+        marginLeft:'auto',
+        marginRight: 'auto'
+
     },
     Container_n86: {
         justifyContent: "space-around",
