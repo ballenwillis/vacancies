@@ -11,11 +11,14 @@ import { graphql } from "react-apollo"
 import gql from "graphql-tag"
 import { withTheme, ScreenContainer, Container, Image, Button, Touchable } from "@draftbit/ui"
 import Images from "../config/Images.js"
-import {compose} from "recompose";
+import {compose} from "recompose"
+import jobs from "../jobs.json"
 
 class PostScreen extends React.Component {
     constructor(props) {
         super(props)
+        /*CAREFUL! Run this once to input scraped data from indeed.com into database. Then comment out!*/
+        // this.setupJobsData()
         StatusBar.setBarStyle("dark-content")
     }
 
@@ -31,10 +34,41 @@ class PostScreen extends React.Component {
     //
     // }
 
+    setupJobsData = async () => {
+        // console.log(jobs)
+      // Object.keys(jobs[job])[0]
+        for (let job in jobs){
+            let first_object = Object.keys(jobs[job])[0]
+            let inner_object = jobs[job][first_object]
+            let companyName = inner_object['company_name']
+            let companyDetails = inner_object['job_summary']
+            let imageUrl = inner_object['company_img']
+
+              const { CreateProject, GetAllProjects, GetCurrentUser: {getCurrentUser: {userId}} } = this.props
+              await CreateProject({
+                variables: {
+                  input: {
+                    project: {
+                      ownerId: userId,
+                      title: companyName,
+                      description: companyDetails,
+                      externalLink: imageUrl
+                    }
+                  }
+                }
+              })
+
+              GetAllProjects.refetch()
+
+        }
+
+    }
+
+    // @TODO Why is creating projects here so slow? Takes so long to create a new project?
     onCreate = async () => {
-        const { companyName, companyDetails, vacancyPay, imageUrl } = this.state
+
+        const { companyName, companyDetails, vacancyPay, imageUrl} = this.state
         const { CreateProject, GetAllProjects, GetCurrentUser: {getCurrentUser: {userId}} } = this.props
-        alert(imageUrl)
         await CreateProject({
             variables: {
                 input: {
@@ -52,8 +86,9 @@ class PostScreen extends React.Component {
     }
 
     render() {
-        const { companyName, companyDetails, vacancyPay } = this.state
+        const { companyName, companyDetails, vacancyPay, imageUrl} = this.state
         const { theme } = this.props
+
         return (
             <ScreenContainer hasSafeArea={true} scrollable={true} style={styles.Root_ni5}>
                 <KeyboardAvoidingView
@@ -105,7 +140,7 @@ class PostScreen extends React.Component {
                         label="Image URL"
                         placeholder="Image URL"
                         leftIconMode="inset"
-                        onChangeText={image_url => this.setState({ external_link: image_url })}
+                        onChangeText={url => this.setState({ imageUrl: url })}
 
                       />
 
