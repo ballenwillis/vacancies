@@ -108,7 +108,7 @@ const doNext = async (client, continuous = true) => {
     try {
       await worker(ctx, job);
     } catch (ignore) {
-      await utils.loginNotificationUser();
+      await utils.loginWorker();
       try {
         await worker(ctx, job);
       } catch (error) {
@@ -185,7 +185,7 @@ function makeNewListener() {
   pgPool.connect(listenForChanges);
 }
 
-utils.loginNotificationUser().then(() => {
+utils.loginWorker().then(() => {
   if (requiredDirectly) {
     if (process.argv.slice(2).includes("--once")) {
       (async function() {
