@@ -49,6 +49,7 @@ const workerId = `worker-${Math.random()}`;
 
 let doNextTimer = null;
 
+require("dotenv").config();
 const pgPoolConfig = {
   connectionString: process.env.DATABASE_URL
 };
