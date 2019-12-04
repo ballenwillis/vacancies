@@ -26,12 +26,17 @@ const ProjectCard = ({
       navigation.navigate("ProjectScreen", {projectId})
   }
 const getCardJson = (ownerName, title, description, createdAt) => {
-  return {"$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  return {
+      "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
       "type": "AdaptiveCard",
-      "version": "1.0",
+       "version": "1.2",
+    "style":"default",
+    "bleed": true,
       "body": [
       {
         "type": "Container",
+        "style":"default",
+
         "items": [
           {
             "type": "TextBlock",
@@ -45,14 +50,6 @@ const getCardJson = (ownerName, title, description, createdAt) => {
               {
                 "type": "Column",
                 "width": "auto",
-                "items": [
-                  {
-                    "type": "Image",
-                    "url": "https://pbs.twimg.com/profile_images/3647943215/d7f12830b3c17a5a9e4afcc370e3a37e_400x400.jpeg",
-                    "size": "small",
-                    "style": "person"
-                  }
-                ]
               },
               {
                 "type": "Column",
@@ -84,28 +81,8 @@ const getCardJson = (ownerName, title, description, createdAt) => {
             "type": "TextBlock",
             "text": description,
             "wrap": true
-          },
-          {
-            "type": "FactSet",
-            "facts": [
-              {
-                "title": "Board:",
-                "value": "Adaptive Card"
-              },
-              {
-                "title": "List:",
-                "value": "Backlog"
-              },
-              {
-                "title": "Assigned to:",
-                "value": "Matt Hidinger"
-              },
-              {
-                "title": "Due date:",
-                "value": "Not set"
-              }
-            ]
           }
+
         ]
       }
     ],
@@ -209,6 +186,8 @@ const styles = StyleSheet.create({
         marginVertical: 16
     },
     container: {
+      backgroundColor: '#EAEAEA',
+
         borderWidth: 2,
         borderRadius: 8
     }
