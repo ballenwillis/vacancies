@@ -63,7 +63,7 @@ class PostScreen extends React.Component {
 
     // @TODO Why is creating projects here so slow? Takes so long to create a new project?
     onCreate = async () => {
-        const { companyName, companyDetails, vacancyPay, imageUrl} = this.state
+        const { companyName, companyDetails, vacancyPay, imageUrl, workSector} = this.state
         const { CreateProject, GetAllProjects, GetCurrentUser: {getCurrentUser: {userId}} } = this.props
         await CreateProject({
             variables: {
