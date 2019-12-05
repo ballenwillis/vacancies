@@ -79,6 +79,7 @@ class PostScreen extends React.Component {
             }
         })
         GetAllProjects.refetch()
+      navigation.navigate()
     }
 
     render() {
