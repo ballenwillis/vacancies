@@ -1,11 +1,12 @@
 import React from "react"
 import {
-    StatusBar,
-    StyleSheet,
-    KeyboardAvoidingView,
-    Text,
-    AsyncStorage,
-    TextInput
+  StatusBar,
+  StyleSheet,
+  KeyboardAvoidingView,
+  Text,
+  AsyncStorage,
+  TextInput,
+  Picker
 } from "react-native"
 import { graphql } from "react-apollo"
 import gql from "graphql-tag"
@@ -27,7 +28,8 @@ class PostScreen extends React.Component {
         companyDetails: "Default Company Details",
         vacancyPay: "Default Pay (if applicable)",
         /* Default image */
-        imageUrl: "https://apps-draftbit-com.s3.amazonaws.com/apps/zYTsJNxi/assets/9e8d5125-43b4-4e87-ab69-a16a93d67a50"
+        imageUrl: "https://apps-draftbit-com.s3.amazonaws.com/apps/zYTsJNxi/assets/9e8d5125-43b4-4e87-ab69-a16a93d67a50",
+        workSector: "Healthcare"
     }
 
     // post = async() => {
@@ -85,7 +87,7 @@ class PostScreen extends React.Component {
     }
 
     render() {
-        const { companyName, companyDetails, vacancyPay, imageUrl} = this.state
+        const { companyName, companyDetails, vacancyPay, imageUrl, workSector} = this.state
         const { theme } = this.props
 
         return (
@@ -112,8 +114,14 @@ class PostScreen extends React.Component {
                             ]}>
                             Post an opportunity
                         </Text>
+                      <Text>{'\n'}</Text>
                     </Container>
                     <Container style={styles.Container_nkd} elevation={0} useThemeGutterPadding={true}>
+
+                      <Text
+                        style={styles.TextField_Label}>
+                        Company Name
+                      </Text>
                         <TextInput
                             style={styles.TextField_nds}
                             type="solid"
@@ -123,6 +131,11 @@ class PostScreen extends React.Component {
                             onChangeText={name => this.setState({ companyName: name })}
 
                         />
+
+                      <Text
+                        style={styles.TextField_Label}>
+                        Company Description
+                      </Text>
                         <TextInput
                             style={styles.TextField_nds}
                             type="solid"
@@ -133,7 +146,10 @@ class PostScreen extends React.Component {
                             numberOfLines = {4}
                             onChangeText={details => this.setState({ companyDetails: details })}
                         />
-
+                        <Text
+                          style={styles.TextField_Label}>
+                          Image Url
+                        </Text>
                           <TextInput
                             style={styles.TextField_nds}
                             type="solid"
@@ -144,6 +160,11 @@ class PostScreen extends React.Component {
 
                           />
 
+                      <Text
+                        style={styles.TextField_Label}>
+                        Pay (if applicable)
+                      </Text>
+
                       <TextInput
                             style={styles.TextField_nds}
                             type="solid"
@@ -153,6 +174,28 @@ class PostScreen extends React.Component {
                             keyboardType = "decimal-pad"
                             onChangeText={pay => this.setState({ vacancyPay: pay })}
                       />
+
+                      <Text
+                        style={styles.TextField_Label}>
+                        Work Sector
+                      </Text>
+
+                      <Picker
+                        selectedValue={workSector}
+                        // style={{height: 50, width: 100}}
+                        onValueChange={(itemValue, itemIndex) =>
+                          this.setState({workSector: itemValue})
+                        }>
+                        <Picker.Item label="Healthcare" value="Healthcare" />
+                        <Picker.Item label="Information Technology" value="Information Technology" />
+                        <Picker.Item label="Real Estate" value="Real Estate" />
+                        <Picker.Item label="Retail" value="Retail" />
+                        <Picker.Item label="Education" value="Education" />
+                        <Picker.Item label="Government" value="Government" />
+                        <Picker.Item label="Transportation" value="Transportation" />
+                        <Picker.Item label="Food" value="Food" />
+
+                      </Picker>
 
 
                       <Button
@@ -235,6 +278,9 @@ const styles = StyleSheet.create({
 
     Touchable_no2: {
         width: "100%"
+    },
+    TextField_Label:{
+      marginTop: 15
     }
 })
 

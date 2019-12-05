@@ -35,7 +35,7 @@ class SignUpScreen extends React.Component {
         formPassword: "",
         formWorkHistory: "",
         formWorkSkills: "",
-        formWorkSector: ""
+        formWorkSector: "Healthcare"
     }
 
     signUp = async () => {
