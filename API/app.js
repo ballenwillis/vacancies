@@ -1,12 +1,14 @@
 const express = require("express");
 const { postgraphile } = require("postgraphile");
 const app = express();
+const ConnectionFilterPlugin = require("postgraphile-plugin-connection-filter");
 
 require("dotenv").config();
 
 app.use(
   postgraphile(process.env.DATABASE_URL, {
     graphiql: true,
+    appendPlugins: [ConnectionFilterPlugin],
     jwtSecret: process.env.API_SECRET,
     pgDefaultRole: "vac_anonymous",
     jwtPgTypeIdentifier: "public.jwt_token",
