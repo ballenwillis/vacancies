@@ -65,7 +65,7 @@ const delete_user_location = async function({ debug, pgPool }, job) {
 }
 
 const call_python = async function (collection, argString, operation){
-  exec('python3 com.py ' + operation + ' ' + argString + ' ' + collection, (err, stdout, stderr) => {
+  exec('python3 src/tasks/com.py ' + operation + " '" + JSON.stringify(argString) + "' " + collection, (err, stdout, stderr) => {
     if (err) {
       console.error(err)
       return;
