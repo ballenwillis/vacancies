@@ -19,7 +19,7 @@ class PostScreen extends React.Component {
     constructor(props) {
         super(props)
         /*CAREFUL! Run this once to input scraped data from indeed.com into database. Then comment out!*/
-        // this.setupJobsData()
+        this.setupJobsData()
         StatusBar.setBarStyle("dark-content")
     }
 
@@ -41,10 +41,12 @@ class PostScreen extends React.Component {
       // Object.keys(jobs[job])[0]
         for (let job in jobs){
             let first_object = Object.keys(jobs[job])[0]
+            let workSector = jobs[job]['sector']
             let inner_object = jobs[job][first_object]
             let companyName = inner_object['company_name']
             let companyDetails = inner_object['job_summary']
             let imageUrl = inner_object['company_img']
+            // console.log(workSector, companyName, companyDetails, imageUrl)
 
               const { CreateProject, GetAllProjects, GetCurrentUser: {getCurrentUser: {userId}} } = this.props
               await CreateProject({
@@ -64,7 +66,6 @@ class PostScreen extends React.Component {
               GetAllProjects.refetch()
 
         }
-
     }
 
     // @TODO Why is creating projects here so slow? Takes so long to create a new project?
@@ -295,6 +296,7 @@ const GET_ALL_PROJECTS = gql`
         title
         externalLink
         createdAt
+        sector
         userByOwnerId {
           firstName
           lastName

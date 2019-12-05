@@ -135,7 +135,7 @@ class HomeScreen extends React.Component {
               style={{marginBottom: 16}}
               type="outline"
               onPress={this.sort}>
-              Find Vacancies!
+              Find Me Relevant Vacancies!
               </Button>
                 {/*<Button*/}
                     {/*style={{marginBottom: 16}}*/}
