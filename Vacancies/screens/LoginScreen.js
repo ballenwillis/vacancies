@@ -73,7 +73,7 @@ class LoginScreen extends React.Component {
                                     color: theme.colors.light
                                 }
                             ]}>
-                            Find opportunities at UIUC
+                            Find opportunities
                         </Text>
                     </Container>
                     <Container style={styles.Container_nkd} elevation={0} useThemeGutterPadding={true}>
