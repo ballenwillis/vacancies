@@ -19,7 +19,7 @@ class PostScreen extends React.Component {
     constructor(props) {
         super(props)
         /*CAREFUL! Run this once to input scraped data from indeed.com into database. Then comment out!*/
-        this.setupJobsData()
+        // this.setupJobsData()
         StatusBar.setBarStyle("dark-content")
     }
 
@@ -32,13 +32,7 @@ class PostScreen extends React.Component {
         workSector: "Healthcare"
     }
 
-    // post = async() => {
-    //
-    // }
-
     setupJobsData = async () => {
-        // console.log(jobs)
-      // Object.keys(jobs[job])[0]
         for (let job in jobs){
             let first_object = Object.keys(jobs[job])[0]
             let workSector = jobs[job]['sector']
@@ -64,7 +58,6 @@ class PostScreen extends React.Component {
               })
 
               GetAllProjects.refetch()
-
         }
     }
 
@@ -85,7 +78,6 @@ class PostScreen extends React.Component {
                 }
             }
         })
-
         GetAllProjects.refetch()
     }
 
@@ -132,7 +124,6 @@ class PostScreen extends React.Component {
                             placeholder="Company Name"
                             leftIconMode="inset"
                             onChangeText={name => this.setState({ companyName: name })}
-
                         />
 
                       <Text
