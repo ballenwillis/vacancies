@@ -119,7 +119,7 @@ const getCardJson = (ownerName, title, description, createdAt) => {
    console.log(backgroundColHit, userSector, projectSector)
     if (backgroundColHit &&
       (userSector.toLowerCase() === projectSector.toLowerCase())) {
-      return "#FF0000"
+      return "#FFCCBB"
     }
     return "#FFF"
   }
