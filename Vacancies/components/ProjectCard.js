@@ -19,12 +19,15 @@ const ProjectCard = ({
                          description,
                          externalLink,
                          createdAt,
+                         userSector,
+                         projectSector,
+                         backgroundColHit,
                          projectId
                      }) => {
 
-  const onPress = () =>  {
-      navigation.navigate("ProjectScreen", {projectId})
-  }
+const onPress = () =>  {
+    navigation.navigate("ProjectScreen", {projectId})
+}
 const getCardJson = (ownerName, title, description, createdAt) => {
   return {
       "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
@@ -112,10 +115,18 @@ const getCardJson = (ownerName, title, description, createdAt) => {
     ]
   }
   }
+  const setBackgroundColor  = (backgroundColHit) => {
+   console.log(backgroundColHit, userSector, projectSector)
+    if (backgroundColHit &&
+      (userSector.toLowerCase() === projectSector.toLowerCase())) {
+      return "#FFCCBB"
+    }
+    return "#FFF"
+  }
 
   return(
     <TouchableOpacity onPress = {onPress}>
-      <Container>
+      <Container style={{ backgroundColor: setBackgroundColor(backgroundColHit)}}>
         <CardBlock
           style={styles.CardBlock_nve}
           icon="MaterialIcons/cloud"
@@ -138,17 +149,27 @@ const getCardJson = (ownerName, title, description, createdAt) => {
             <>
               <Button
                 style={styles.Button_nl2}
-                icon="FontAwesome/pencil"
+
                 type="outline"
                 onPress={onEdit}>
                 Edit Project
+                <Image source = {require("../assets/images/edit.png")}
+                       style={{width: 20, height: 20}}>
+
+                </Image>
+
               </Button>
               <Button
                 style={styles.Button_nl2}
-                icon="FontAwesome/trash-o"
                 type="outline"
                 onPress={onDelete}>
                 Delete Project
+                <Image source = {require("../assets/images/trash.png")}
+                       style={{width: 25, height: 25}}>
+
+                </Image>
+
+
               </Button>
             </>
           ) : isMember ? null : (
