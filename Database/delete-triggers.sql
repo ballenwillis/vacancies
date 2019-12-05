@@ -4,8 +4,8 @@ DROP TRIGGER IF EXISTS delete_project ON public.project;
 
 CREATE OR REPLACE FUNCTION public.add_job_delete_project() RETURNS trigger AS $$
 BEGIN
-    PERFORM app_jobs.add_job('delete_project', row_to_json(NEW));
-    RETURN NEW;
+    PERFORM app_jobs.add_job('delete_project', row_to_json(OLD));
+    RETURN OLD;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -17,8 +17,8 @@ DROP TRIGGER IF EXISTS delete_project_comment ON public.project_comment;
 
 CREATE OR REPLACE FUNCTION public.add_job_delete_project_comment() RETURNS trigger AS $$
 BEGIN
-    PERFORM app_jobs.add_job('delete_project_comment', row_to_json(NEW));
-    RETURN NEW;
+    PERFORM app_jobs.add_job('delete_project_comment', row_to_json(OLD));
+    RETURN OLD;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -30,8 +30,8 @@ DROP TRIGGER IF EXISTS delete_project_follow ON public.project_follow;
 
 CREATE OR REPLACE FUNCTION public.add_job_delete_project_follow() RETURNS trigger AS $$
 BEGIN
-    PERFORM app_jobs.add_job('delete_project_follow', row_to_json(NEW));
-    RETURN NEW;
+    PERFORM app_jobs.add_job('delete_project_follow', row_to_json(OLD));
+    RETURN OLD;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -43,8 +43,8 @@ DROP TRIGGER IF EXISTS delete_project_member ON public.project_member;
 
 CREATE OR REPLACE FUNCTION public.add_job_delete_project_member() RETURNS trigger AS $$
 BEGIN
-    PERFORM app_jobs.add_job('delete_project_member', row_to_json(NEW));
-    RETURN NEW;
+    PERFORM app_jobs.add_job('delete_project_member', row_to_json(OLD));
+    RETURN OLD;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -56,8 +56,8 @@ DROP TRIGGER IF EXISTS delete_project_member_request ON public.project_member_re
 
 CREATE OR REPLACE FUNCTION public.add_job_delete_project_member_request() RETURNS trigger AS $$
 BEGIN
-    PERFORM app_jobs.add_job('delete_project_member_request', row_to_json(NEW));
-    RETURN NEW;
+    PERFORM app_jobs.add_job('delete_project_member_request', row_to_json(OLD));
+    RETURN OLD;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -69,8 +69,8 @@ DROP TRIGGER IF EXISTS delete_user ON public.user;
 
 CREATE OR REPLACE FUNCTION public.add_job_delete_user() RETURNS trigger AS $$
 BEGIN
-    PERFORM app_jobs.add_job('delete_user', row_to_json(NEW));
-    RETURN NEW;
+    PERFORM app_jobs.add_job('delete_user', row_to_json(OLD));
+    RETURN OLD;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -82,8 +82,8 @@ DROP TRIGGER IF EXISTS delete_user_image ON public.user_image;
 
 CREATE OR REPLACE FUNCTION public.add_job_delete_user_image() RETURNS trigger AS $$
 BEGIN
-    PERFORM app_jobs.add_job('delete_user_image', row_to_json(NEW));
-    RETURN NEW;
+    PERFORM app_jobs.add_job('delete_user_image', row_to_json(OLD));
+    RETURN OLD;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -95,8 +95,8 @@ DROP TRIGGER IF EXISTS delete_user_location ON public.user_location;
 
 CREATE OR REPLACE FUNCTION public.add_job_delete_user_location() RETURNS trigger AS $$
 BEGIN
-    PERFORM app_jobs.add_job('delete_user_location', row_to_json(NEW));
-    RETURN NEW;
+    PERFORM app_jobs.add_job('delete_user_location', row_to_json(OLD));
+    RETURN OLD;
 END;
 $$ LANGUAGE plpgsql;
 
