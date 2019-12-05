@@ -79,7 +79,8 @@ class PostScreen extends React.Component {
             }
         })
         GetAllProjects.refetch()
-      navigation.navigate()
+        this.props.navigation.navigate("HomeScreen")
+        alert('Posted!')
     }
 
     render() {
