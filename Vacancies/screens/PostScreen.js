@@ -54,7 +54,8 @@ class PostScreen extends React.Component {
                       ownerId: userId,
                       title: companyName,
                       description: companyDetails,
-                      externalLink: imageUrl
+                      externalLink: imageUrl,
+                      sector: workSector
                     }
                   }
                 }
@@ -77,7 +78,8 @@ class PostScreen extends React.Component {
                         ownerId: userId,
                         title: companyName,
                         description: companyDetails,
-                        externalLink: imageUrl
+                        externalLink: imageUrl,
+                        sector: workSector
                     }
                 }
             }

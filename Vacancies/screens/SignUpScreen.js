@@ -49,8 +49,8 @@ class SignUpScreen extends React.Component {
                         firstName: formFirstName,
                         lastName: formLastName,
                         email: formEmail,
-                        work_history:formWorkHistory,
-                        work_skills:formWorkSkills,
+                        workHistory:formWorkHistory,
+                        workSkills:formWorkSkills,
                         sector:formWorkSector,
                         password: formPassword
                     }
