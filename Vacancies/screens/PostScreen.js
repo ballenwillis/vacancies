@@ -32,19 +32,15 @@ class PostScreen extends React.Component {
         workSector: "Healthcare"
     }
 
-    // post = async() => {
-    //
-    // }
-
     setupJobsData = async () => {
-        // console.log(jobs)
-      // Object.keys(jobs[job])[0]
         for (let job in jobs){
             let first_object = Object.keys(jobs[job])[0]
+            let workSector = jobs[job]['sector']
             let inner_object = jobs[job][first_object]
             let companyName = inner_object['company_name']
             let companyDetails = inner_object['job_summary']
             let imageUrl = inner_object['company_img']
+            // console.log(workSector, companyName, companyDetails, imageUrl)
 
               const { CreateProject, GetAllProjects, GetCurrentUser: {getCurrentUser: {userId}} } = this.props
               await CreateProject({
@@ -62,9 +58,7 @@ class PostScreen extends React.Component {
               })
 
               GetAllProjects.refetch()
-
         }
-
     }
 
     // @TODO Why is creating projects here so slow? Takes so long to create a new project?
@@ -84,7 +78,6 @@ class PostScreen extends React.Component {
                 }
             }
         })
-
         GetAllProjects.refetch()
     }
 
@@ -131,7 +124,6 @@ class PostScreen extends React.Component {
                             placeholder="Company Name"
                             leftIconMode="inset"
                             onChangeText={name => this.setState({ companyName: name })}
-
                         />
 
                       <Text
@@ -295,6 +287,7 @@ const GET_ALL_PROJECTS = gql`
         title
         externalLink
         createdAt
+        sector
         userByOwnerId {
           firstName
           lastName

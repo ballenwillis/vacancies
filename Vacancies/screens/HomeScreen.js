@@ -1,5 +1,5 @@
 import React from "react"
-import { AsyncStorage, StatusBar, StyleSheet, ActivityIndicator, FlatList } from "react-native"
+import { AsyncStorage, StatusBar, StyleSheet, ActivityIndicator, FlatList, Image} from "react-native"
 import { withTheme, ScreenContainer, Button } from "@draftbit/ui"
 import { graphql } from "react-apollo"
 import { compose } from "recompose"
@@ -13,7 +13,8 @@ class HomeScreen extends React.Component {
         StatusBar.setBarStyle("dark-content")
 
         this.state = {
-            theme: Object.assign(props.theme, screenTheme)
+            theme: Object.assign(props.theme, screenTheme),
+            backgroundColor: false
         }
     }
 
@@ -65,25 +66,27 @@ class HomeScreen extends React.Component {
         GetAllProjects.refetch()
     }
 
-    sort = async() => {
-        alert('Hello')
+    filter = async () => {
+        this.state.backgroundColor = !this.state.backgroundColor
     }
 
     renderItem = ({ item }) => {
         const { theme } = this.state
-        const {
+        var {
             projectId,
             ownerId,
             title,
             description,
             externalLink,
             createdAt,
+            sector,
             userByOwnerId: { firstName, lastName }
         } = item
+        let projectSector = sector
 
-        const {
+        var {
             GetCurrentUser: {
-                getCurrentUser: { userId }
+                getCurrentUser: { userId, sector}
             }
         } = this.props
         // TODO: Fix Database so that ownerId's come back in type int instead of string
@@ -102,6 +105,9 @@ class HomeScreen extends React.Component {
                 onEdit={this.onEdit(projectId)}
                 navigation={this.props.navigation}
                 createdAt = {createdAt}
+                backgroundColHit = {this.state.backgroundColor}
+                userSector = {sector}
+                projectSector = {projectSector}
                 projectId
             />
 
@@ -134,8 +140,8 @@ class HomeScreen extends React.Component {
               <Button
               style={{marginBottom: 16}}
               type="outline"
-              onPress={this.sort}>
-              Find Vacancies!
+              onPress={this.filter}>
+              Find Me Relevant Vacancies!
               </Button>
                 {/*<Button*/}
                     {/*style={{marginBottom: 16}}*/}
@@ -144,13 +150,17 @@ class HomeScreen extends React.Component {
                     {/*Create New Project*/}
                 {/*</Button>*/}
                 <Button
-                    icon="FontAwesome/angle-left"
                     type="outline"
                     onPress={async () => {
                         await AsyncStorage.removeItem("token")
                         this.props.navigation.navigate("AuthNavigator")
                     }}>
-                    Logout
+
+                  <Image source = {require("../assets/images/left-arrow.jpg")}
+                         style={{width: 20, height: 10}}>
+                  </Image>
+                  Logout
+
                 </Button>
             </ScreenContainer>
         )
@@ -176,6 +186,7 @@ const GET_ALL_PROJECTS = gql`
         description
         createdAt
         externalLink
+        sector
         userByOwnerId {
           firstName
           lastName
@@ -189,6 +200,12 @@ const GET_CURRENT_USER = gql`
   {
     getCurrentUser {
       userId
+      aboutMe
+      profilePictureId
+      workHistory
+      workSkills
+      sector
+      mobile
     }
   }
 `
