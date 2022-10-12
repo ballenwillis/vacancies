@@ -13,7 +13,7 @@
     "@apollo/react-hooks": "^3.1.3",
     "@draftbit/ui": ">=2.32.1",
     "@expo/vector-icons": "^10.0.6",
-    "adaptivecards-reactnative": "^1.2.1",
+    "adaptivecards-reactnative": "^2.2.29",
     "apollo-boost": "^0.4.4",
     "apollo-cache-inmemory": "^1.6.3",
     "apollo-client": "^2.6.4",
